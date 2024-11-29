@@ -100,8 +100,7 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
 
     private List<TInput> LoadInput()
     {
-        var fileName = $"{Id:D2}.txt";
-        var path = FileHelper.GetInputFilePath(fileName);
+        var path = FileHelper.GetInputFilePath(Id);
 
         var entries = new List<TInput>();
         foreach (var line in FileHelper.ReadFile(path))
