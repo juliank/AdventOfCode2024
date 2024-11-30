@@ -94,32 +94,35 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
     /// but the most typical implementation will only return a single item with:
     /// <code>yield return</code>
     /// </summary>
+    /// <remarks>
+    /// Override <see cref="ParseAlternateInput(string)"/> to use a different parsing logic for part 2.
+    /// </remarks>
     /// <param name="inputItem">One line from the puzzle input.</param>
     /// <returns>One (or more) elements parsed from the input line.</returns>
     protected internal abstract IEnumerable<TInput> ParseInput(string inputItem);
 
-    protected internal virtual IEnumerable<TInput> ParseAlternateInput(string inputItem) => ParseInput(inputItem);
-
     /// <summary>
-    /// Set this property to true to use the alternate parsing method <see cref="ParseAlternateInput(string)"/> instead
-    /// of <see cref="ParseInput(string)"/> when loading the input entries. This allows for part two to use a different
-    /// parsing logic than part one.
+    /// Override this method to provide alternative parsing logic for when solving part 2.
     /// </summary>
-    /// <remarks>
-    /// The property must be set to true before accessing <see cref="InputEntries"/> for the first time,
-    /// as this will trigger the loading of the input. The concrete class must also override <see cref="ParseAlternateInput(string)"/>,
-    /// otherwise it will just proxy the call to <see cref="ParseInput(string)"/>.
-    /// </remarks>
-    protected internal bool UseAlternateParsing { get; set; }
+    /// <param name="inputItem">One line from the puzzle input.</param>
+    /// <returns>One (or more) elements parsed from the input line.</returns>
+    protected internal virtual IEnumerable<TInput> ParseAlternateInput(string inputItem) => ParseInput(inputItem);
 
     private List<TInput> LoadInput()
     {
         var path = FileHelper.GetInputFilePath(Id);
 
+        var baseMethod = typeof(Puzzle<,>).GetMethod(nameof(ParseAlternateInput), BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var derivedMethod = GetType().GetMethod(nameof(ParseAlternateInput), BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        var isInvokedFromPart2 = new StackTrace().GetFrames().Any(f => f.GetMethod()!.Name == nameof(SolvePart2));
+        var alternateParsingImplemented = baseMethod.DeclaringType!.Name != derivedMethod.DeclaringType!.Name;
+        var useAlternateParsing = isInvokedFromPart2 && alternateParsingImplemented;
+
         var entries = new List<TInput>();
         foreach (var line in FileHelper.ReadFile(path))
         {
-            var parsedInput = UseAlternateParsing ? ParseAlternateInput(line) : ParseInput(line);
+            var parsedInput = useAlternateParsing ? ParseAlternateInput(line) : ParseInput(line);
             entries.AddRange(parsedInput);
         }
 
