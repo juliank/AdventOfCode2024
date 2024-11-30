@@ -98,6 +98,20 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
     /// <returns>One (or more) elements parsed from the input line.</returns>
     protected internal abstract IEnumerable<TInput> ParseInput(string inputItem);
 
+    protected internal virtual IEnumerable<TInput> ParseAlternateInput(string inputItem) => ParseInput(inputItem);
+
+    /// <summary>
+    /// Set this property to true to use the alternate parsing method <see cref="ParseAlternateInput(string)"/> instead
+    /// of <see cref="ParseInput(string)"/> when loading the input entries. This allows for part two to use a different
+    /// parsing logic than part one.
+    /// </summary>
+    /// <remarks>
+    /// The property must be set to true before accessing <see cref="InputEntries"/> for the first time,
+    /// as this will trigger the loading of the input. The concrete class must also override <see cref="ParseAlternateInput(string)"/>,
+    /// otherwise it will just proxy the call to <see cref="ParseInput(string)"/>.
+    /// </remarks>
+    protected internal bool UseAlternateParsing { get; set; }
+
     private List<TInput> LoadInput()
     {
         var path = FileHelper.GetInputFilePath(Id);
@@ -105,7 +119,8 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
         var entries = new List<TInput>();
         foreach (var line in FileHelper.ReadFile(path))
         {
-            entries.AddRange(ParseInput(line));
+            var parsedInput = UseAlternateParsing ? ParseAlternateInput(line) : ParseInput(line);
+            entries.AddRange(parsedInput);
         }
 
         return entries;

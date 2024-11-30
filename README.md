@@ -27,8 +27,6 @@ To avoid having to specify the project path every time, it is easiest running th
 
 ## General
 
-- Read input automatically?
-- Look into making it possible to use separate parsing logic for part 1 and part 2.
 - Consider making a type (enum?) for `Direction` (currently used in both puzzle 10 and 16 2023).
   - Extend `Point` with methods to get the next point in the given `Direction`?
 - Making a utility method to create a set of points with values, with optional max/min values?
