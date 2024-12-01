@@ -35,10 +35,7 @@ To avoid having to specify the project path every time, it is easiest running th
     - `level` is `1` for part 1 and `2` for part 2
   - Response will return `https://adventofcode.com/{YEAR}/day/{DAY}/answer`
     - HTML body will contain `That's not the right answer; your answer is too high. (...)` if wrong
-- Consider making a type (enum?) for `Direction` (currently used in both puzzle 10 and 16 2023).
-  - Extend `Point` with methods to get the next point in the given `Direction`?
 - Making a utility method to create a set of points with values, with optional max/min values?
-- Rewrite the Point<T> record to use composition instead of inheritance
 
 ## Puzzles
 
