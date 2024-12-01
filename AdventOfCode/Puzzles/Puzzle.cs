@@ -120,7 +120,7 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
         var useAlternateParsing = isInvokedFromPart2 && alternateParsingImplemented;
 
         var entries = new List<TInput>();
-        foreach (var line in FileHelper.ReadFile(path))
+        foreach (var line in File.ReadAllLines(path))
         {
             var parsedInput = useAlternateParsing ? ParseAlternateInput(line) : ParseInput(line);
             entries.AddRange(parsedInput);

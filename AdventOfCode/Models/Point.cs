@@ -87,7 +87,7 @@ public readonly record struct Point(int X, int Y, int Z = 0)
             && Math.Abs(Z - point.Z) <= 1;
     }
 
-    public int ManhattanDistanceTo(OldPoint point)
+    public int ManhattanDistanceTo(Point point)
     {
         return Math.Abs(X - point.X) + Math.Abs(Y - point.Y) + Math.Abs(Z - point.Z);
     }

@@ -31,22 +31,6 @@ public static class FileHelper
         return filePath;
     }
 
-    public static List<string> ReadFile(string filePath)
-    {
-        var lines = new List<string>();
-
-        using var sr = new StreamReader(filePath);
-
-        var lineItem = sr.ReadLine();
-        while (lineItem != null)
-        {
-            lines.Add(lineItem);
-            lineItem = sr.ReadLine();
-        }
-
-        return lines;
-    }
-
     private static async Task<string> FetchContentFromUrl(string url)
     {
         var sessionCookie = Environment.GetEnvironmentVariable("AOC_SESSION", EnvironmentVariableTarget.User);
