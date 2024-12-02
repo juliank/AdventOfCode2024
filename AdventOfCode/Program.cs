@@ -17,7 +17,7 @@ WriteLine();
 if (args.Length == 0)
 {
     WriteLine($"No puzzle id specified, using latest {lastPuzzleId}");
-    args = new[] { lastPuzzleId.ToString() };
+    args = [lastPuzzleId.ToString()];
 }
 if (args[0].Equals("all", StringComparison.InvariantCultureIgnoreCase))
 {

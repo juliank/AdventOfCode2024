@@ -29,7 +29,6 @@ To avoid having to specify the project path every time, it is easiest running th
 
 ## General
 
-- Make `ParseInput` only return a single item?
 - Auto-post answer?
   - Use same session cookie as when auto-loading input
   - Endpoint is `https://adventofcode.com/{YEAR}/day/{DAY}/answer`
@@ -37,7 +36,6 @@ To avoid having to specify the project path every time, it is easiest running th
     - `level` is `1` for part 1 and `2` for part 2
   - Response will return `https://adventofcode.com/{YEAR}/day/{DAY}/answer`
     - HTML body will contain `That's not the right answer; your answer is too high. (...)` if wrong
-- Making a utility method to create a set of points with values, with optional max/min values?
 
 ## Puzzles
 
