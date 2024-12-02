@@ -12,6 +12,8 @@ It all starts at https://adventofcode.com/
 1. Implement `SolvePart1` (followed by `SolvePart2`)
 1. Run puzzle and submit the result :-)
 
+**_NB: At the start of a new year, when copying files from last year, remember to update `FileHelper.Year`._**
+
 # Running the code
 
 To avoid having to specify the project path every time, it is easiest running the puzzles from within the `AdventOfCode` project directory:
