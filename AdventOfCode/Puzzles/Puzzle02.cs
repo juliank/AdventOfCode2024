@@ -27,7 +27,7 @@ public class Puzzle02 : Puzzle<int[], int>
             // otherwise be a safe report.
             for (int i = 0; i < numbers.Length; i++)
             {
-                var numbersExceptI = RemoveAt(numbers, i).ToArray();
+                var numbersExceptI = numbers[..i].Concat(numbers[(i + 1)..]).ToArray();
                 if (ReportIsSafe(numbersExceptI))
                 {
                     return true;
@@ -69,18 +69,5 @@ public class Puzzle02 : Puzzle<int[], int>
             }
         }
         return true;
-    }
-
-    private static IEnumerable<T> RemoveAt<T>(IEnumerable<T> source, int index)
-    {
-        if (index < 0 || index >= source.Count())
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
-        }
-
-        return source
-            .Select((item, idx) => new { item, idx })
-            .Where(x => x.idx != index)
-            .Select(x => x.item);
     }
 }
