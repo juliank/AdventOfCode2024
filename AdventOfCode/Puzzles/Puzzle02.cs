@@ -6,7 +6,7 @@ public class Puzzle02 : Puzzle<int[], int>
 
     public Puzzle02() : base(PuzzleId) { }
 
-    public Puzzle02(params List<int[]> inputEntries) : base(PuzzleId, inputEntries) { }
+    public Puzzle02(params IEnumerable<int[]> inputEntries) : base(PuzzleId, inputEntries) { }
 
     public override int SolvePart1()
     {
@@ -37,9 +37,9 @@ public class Puzzle02 : Puzzle<int[], int>
         }).Count();
     }
 
-    protected internal override IEnumerable<int[]> ParseInput(string inputItem)
+    protected internal override int[] ParseInput(string inputItem)
     {
-        yield return inputItem.Split(' ').Select(int.Parse).ToArray();
+        return inputItem.Split(' ').Select(int.Parse).ToArray();
     }
 
     /// <summary>
@@ -55,13 +55,13 @@ public class Puzzle02 : Puzzle<int[], int>
         var increasing = numbers[1] > numbers[0];
         for (var i = 1; i < numbers.Length; i++)
         {
-            bool incInner = numbers[i] > numbers[i - 1];
+            var incInner = numbers[i] > numbers[i - 1];
             if (incInner != increasing)
             {
                 return false;
             }
 
-            int value = numbers[i] - numbers[i - 1];
+            var value = numbers[i] - numbers[i - 1];
             var absValue = Math.Abs(value);
             if (absValue is < 1 or > 3)
             {

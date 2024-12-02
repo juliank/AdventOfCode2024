@@ -6,7 +6,7 @@ public class Puzzle00 : Puzzle<long, long>
 
     public Puzzle00() : base(PuzzleId) { }
 
-    public Puzzle00(params List<long> inputEntries) : base(PuzzleId, inputEntries) { }
+    public Puzzle00(params IEnumerable<long> inputEntries) : base(PuzzleId, inputEntries) { }
 
     public override long SolvePart1()
     {
@@ -18,8 +18,8 @@ public class Puzzle00 : Puzzle<long, long>
         throw new NotImplementedException();
     }
 
-    protected internal override IEnumerable<long> ParseInput(string inputItem)
+    protected internal override long ParseInput(string inputItem)
     {
-        yield return 0;
+        return 0;
     }
 }

@@ -6,7 +6,7 @@ public class Puzzle01 : Puzzle<(int, int), int>
 
     public Puzzle01() : base(PuzzleId) { }
 
-    public Puzzle01(params List<(int, int)> inputEntries) : base(PuzzleId, inputEntries) { }
+    public Puzzle01(params IEnumerable<(int, int)> inputEntries) : base(PuzzleId, inputEntries) { }
 
     public override int SolvePart1()
     {
@@ -37,9 +37,9 @@ public class Puzzle01 : Puzzle<(int, int), int>
         return totalSimilarityScore;
     }
 
-    protected internal override IEnumerable<(int, int)> ParseInput(string inputItem)
+    protected internal override (int, int) ParseInput(string inputItem)
     {
         var pair = inputItem.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        yield return (int.Parse(pair[0]), int.Parse(pair[1]));
+        return (int.Parse(pair[0]), int.Parse(pair[1]));
     }
 }

@@ -35,9 +35,9 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
     /// <summary>
     /// Alternate ctor to allow creating the puzzle with a hardcode set of entries (for easier testing).
     /// </summary>
-    protected Puzzle(int id, params List<TInput> inputEntries) : this(id)
+    protected Puzzle(int id, params IEnumerable<TInput> inputEntries) : this(id)
     {
-        _inputEntries = inputEntries;
+        _inputEntries = inputEntries.ToList();
     }
 
     object IPuzzle.Solve() => Solve();
@@ -89,24 +89,20 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
     public abstract TResult SolvePart2();
 
     /// <summary>
-    /// Implement this method to parse the puzzle's input. All the returned
-    /// elements from the method will be added to the puzzle's <see cref="InputEntries"/>,
-    /// but the most typical implementation will only return a single item with:
-    /// <code>yield return</code>
+    /// Implement this method to parse the puzzle's input. The method should parse
+    /// a single line from the input file.
     /// </summary>
     /// <remarks>
     /// Override <see cref="ParseAlternateInput(string)"/> to use a different parsing logic for part 2.
     /// </remarks>
-    /// <param name="inputItem">One line from the puzzle input.</param>
-    /// <returns>One (or more) elements parsed from the input line.</returns>
-    protected internal abstract IEnumerable<TInput> ParseInput(string inputItem);
+    /// <param name="line">One line from the puzzle input.</param>
+    protected internal abstract TInput ParseInput(string line);
 
     /// <summary>
     /// Override this method to provide alternative parsing logic for when solving part 2.
     /// </summary>
-    /// <param name="inputItem">One line from the puzzle input.</param>
-    /// <returns>One (or more) elements parsed from the input line.</returns>
-    protected internal virtual IEnumerable<TInput> ParseAlternateInput(string inputItem) => ParseInput(inputItem);
+    /// <param name="line">One line from the puzzle input.</param>
+    protected internal virtual TInput ParseAlternateInput(string line) => ParseInput(line);
 
     private List<TInput> LoadInput()
     {
@@ -123,7 +119,7 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
         foreach (var line in File.ReadAllLines(path))
         {
             var parsedInput = useAlternateParsing ? ParseAlternateInput(line) : ParseInput(line);
-            entries.AddRange(parsedInput);
+            entries.Add(parsedInput);
         }
 
         return entries;
