@@ -27,16 +27,16 @@ public class Puzzle04Tests
     public void Part1ExampleInput()
     {
         _puzzle = new Puzzle04(
-            "MMMSXXMASM".ToCharArray(),
-            "MSAMXMSMSA".ToCharArray(),
-            "AMXSXMAAMM".ToCharArray(),
-            "MSAMASMSMX".ToCharArray(),
-            "XMASAMXAMM".ToCharArray(),
-            "XXAMMXXAMA".ToCharArray(),
-            "SMSMSASXSS".ToCharArray(),
-            "SAXAMASAAA".ToCharArray(),
-            "MAMMMXMMMM".ToCharArray(),
-            "MXMXAXMASX".ToCharArray()
+            "MMMSXXMASM",
+            "MSAMXMSMSA",
+            "AMXSXMAAMM",
+            "MSAMASMSMX",
+            "XMASAMXAMM",
+            "XXAMMXXAMA",
+            "SMSMSASXSS",
+            "SAXAMASAAA",
+            "MAMMMXMMMM",
+            "MXMXAXMASX"
         );
 
         var result = _puzzle.SolvePart1();

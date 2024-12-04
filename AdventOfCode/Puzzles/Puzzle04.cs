@@ -1,19 +1,31 @@
 namespace AdventOfCode.Puzzles;
 
-public class Puzzle04 : Puzzle<char[], long>
+public class Puzzle04 : Puzzle<string, long>
 {
     private const int PuzzleId = 04;
 
     public Puzzle04() : base(PuzzleId) { }
 
-    public Puzzle04(params IEnumerable<char[]> inputEntries) : base(PuzzleId, inputEntries) { }
+    public Puzzle04(params IEnumerable<string> inputEntries) : base(PuzzleId, inputEntries) { }
+
+    /// <summary>
+    /// WordSearch[y][x] (rows,columns)
+    /// </summary>
+    private string[] WordSearch {
+        get
+        {
+            if (field.Length == 0)
+            {
+                field = InputEntries.ToArray();
+            }
+            return field;
+        }
+    } = [];
 
     public override long SolvePart1()
     {
-        var wordSearch = InputEntries.ToArray();
-        // wordSearch[y][x] (rows,columns)
-        var rows = wordSearch.Length;
-        var columns = wordSearch[0].Length;
+        var rows = WordSearch.Length;
+        var columns = WordSearch[0].Length;
 
         var hitCount = 0;
 
@@ -21,49 +33,13 @@ public class Puzzle04 : Puzzle<char[], long>
         {
             for (int x = 0; x < columns; x++)
             {
-                if (wordSearch[y][x] != 'X')
-                {
-                    continue;
-                }
-                
                 var p = new BoundedPoint(new Point(x, y))
                 {
                     MinX = 0, MaxX = columns - 1,
                     MinY = 0, MaxY = rows - 1
                 };
-                // var nextP = nextBP.Point;
-                foreach (var direction in Directions.D2Extended)
-                {
-                    var nextBp = p;
-                    if (!nextBp.TryGetDirection(direction, out var nextP))
-                    {
-                        continue;
-                    }
-                    if (wordSearch[nextP.Y][nextP.X] != 'M')
-                    {
-                        continue;
-                    }
-                    nextBp = nextBp with { Point = nextP };
-
-                    if (!nextBp.TryGetDirection(direction, out nextP))
-                    {
-                        continue;
-                    }
-                    if (wordSearch[nextP.Y][nextP.X] != 'A')
-                    {
-                        continue;
-                    }
-                    nextBp = nextBp with { Point = nextP };
-
-                    if (!nextBp.TryGetDirection(direction, out nextP))
-                    {
-                        continue;
-                    }
-                    if (wordSearch[nextP.Y][nextP.X] == 'S')
-                    {
-                        hitCount++;
-                    }
-                }
+                var hitsAtPoint = HasWord(p, "XMAS", Directions.D2Extended);
+                hitCount += hitsAtPoint.Count;
             }
         }
 
@@ -72,52 +48,24 @@ public class Puzzle04 : Puzzle<char[], long>
 
     public override long SolvePart2()
     {
-        var wordSearch = InputEntries.ToArray();
-        // wordSearch[y][x] (rows,columns)
-        var rows = wordSearch.Length;
-        var columns = wordSearch[0].Length;
+        var rows = WordSearch.Length;
+        var columns = WordSearch[0].Length;
 
-        var xDirections = new[] { Direction.NE, Direction.SE, Direction.SW, Direction.NW };
         var aPoints = new List<Point>();
 
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < columns; x++)
             {
-                if (wordSearch[y][x] != 'M')
-                {
-                    continue;
-                }
-                
                 var p = new BoundedPoint(new Point(x, y))
                 {
                     MinX = 0, MaxX = columns - 1,
                     MinY = 0, MaxY = rows - 1
                 };
-                
-                foreach (var direction in xDirections)
+                var hitsAtPoint = HasWord(p, "MAS", Direction.NE, Direction.SE, Direction.SW, Direction.NW);
+                foreach (var direction in hitsAtPoint)
                 {
-                    var nextBp = p;
-                    if (!nextBp.TryGetDirection(direction, out var nextP))
-                    {
-                        continue;
-                    }
-                    if (wordSearch[nextP.Y][nextP.X] != 'A')
-                    {
-                        continue;
-                    }
-
-                    var aPoint = nextP;
-                    nextBp = nextBp with { Point = nextP };
-
-                    if (!nextBp.TryGetDirection(direction, out nextP))
-                    {
-                        continue;
-                    }
-                    if (wordSearch[nextP.Y][nextP.X] == 'S')
-                    {
-                        aPoints.Add(aPoint);
-                    }
+                    aPoints.Add(p.Point.Get(direction)); // Add the point of the A letter to the list
                 }
             }
         }
@@ -128,8 +76,53 @@ public class Puzzle04 : Puzzle<char[], long>
         return xCount;
     }
 
-    protected internal override char[] ParseInput(string inputItem)
+    protected internal override string ParseInput(string inputItem)
     {
-        return inputItem.ToCharArray();
+        return inputItem;
+    }
+
+    private List<Direction> HasWord(BoundedPoint bp, string word, params Direction[] inDirections)
+    {
+        if (WordSearch[bp.Point.Y][bp.Point.X] != word[0])
+        {
+            return [];
+        }
+
+        var directionsWithWord = new List<Direction>();
+        inDirections ??= Directions.D2Extended;
+        foreach (var direction in inDirections)
+        {
+            if (bp.TryGetDirection(direction, out var nextPoint))
+            {
+                var nextBp = bp with { Point = nextPoint };
+                if (HasWord(direction, nextBp, word[1..]))
+                {
+                    directionsWithWord.Add(direction);
+                }
+            }
+        }
+
+        return directionsWithWord;
+    }
+
+    private bool HasWord(Direction direction, BoundedPoint bp, string word)
+    {
+        if (WordSearch[bp.Point.Y][bp.Point.X] != word[0])
+        {
+            return false;
+        }
+
+        if (word.Length == 1)
+        {
+            return true;
+        }
+
+        if (!bp.TryGetDirection(direction, out var nextPoint))
+        {
+            return false;
+        }
+
+        var nextBp = bp with { Point = nextPoint };
+        return HasWord(direction, nextBp, word[1..]);
     }
 }

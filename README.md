@@ -47,6 +47,4 @@ Missing solutions and suggestions for improvements, for when time might be avail
 
 ## Puzzles
 
-- Puzzle 4:
-  - Extract shared logic for part 1 and part 2
-  - Use recursion
+- Puzzle N: ...
