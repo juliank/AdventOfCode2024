@@ -18,9 +18,13 @@ public readonly record struct Point(int X, int Y, int Z = 0)
         return direction switch
         {
             Direction.N => GetN(),
-            Direction.S => GetS(),
+            Direction.NE => GetN().GetE(),
             Direction.E => GetE(),
+            Direction.SE => GetS().GetE(),
+            Direction.S => GetS(),
+            Direction.SW => GetS().GetW(),
             Direction.W => GetW(),
+            Direction.NW => GetN().GetW(),
             Direction.U => GetUp(),
             Direction.D => GetDown(),
             _ => throw new ArgumentException($"Unknown direction {direction}")

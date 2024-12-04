@@ -27,8 +27,16 @@ To avoid having to specify the project path every time, it is easiest running th
 
 # TODOs
 
+Missing solutions and suggestions for improvements, for when time might be available...
+
 ## General
 
+- `BoundedPoint`:
+  - Unit tests (especially on `TryGetDirection`)
+  - Can all `TryGetX` methods be removed (in favor of `TryGetDirection`)?
+- `Direction`:
+  - Missing comments on new directions
+  - Better naming of `D2Extended`? (and similar for 3D?)
 - Auto-post answer?
   - Use same session cookie as when auto-loading input
   - Endpoint is `https://adventofcode.com/{YEAR}/day/{DAY}/answer`
@@ -39,4 +47,6 @@ To avoid having to specify the project path every time, it is easiest running th
 
 ## Puzzles
 
-- Puzzle N: ...
+- Puzzle 4:
+  - Extract shared logic for part 1 and part 2
+  - Use recursion

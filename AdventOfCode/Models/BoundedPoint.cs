@@ -9,6 +9,17 @@ public record class BoundedPoint(Point Point)
     public int? MinZ { get; init; }
     public int? MaxZ { get; init; }
 
+    public bool TryGetDirection(Direction direction, out Point p)
+    {
+        p = Point.Get(direction);
+        return !(p.X > MaxX ||
+                 p.X < MinX ||
+                 p.Y > MaxY ||
+                 p.Y < MinY ||
+                 p.Z > MaxZ ||
+                 p.Z < MinZ);
+    }
+
     /// <summary>
     /// Get the point <see cref="Direction.N"/> of the current. The return value indicates
     /// if the point exists within the defined boundaries.
