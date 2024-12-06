@@ -12,6 +12,23 @@ public static class Directions
     /// All possible <see cref="Direction"/> values in a three-dimensional space.
     /// </summary>
     public static readonly Direction[] D3 = [Direction.N, Direction.S, Direction.E, Direction.W, Direction.U, Direction.D];
+
+    public static Direction Rotate(this Direction direction, int degrees)
+    {
+        if (degrees != 90)
+        {
+            throw new ArgumentOutOfRangeException(nameof(degrees), "Only 90 is currently supported");
+        }
+
+        return direction switch
+        {
+            Direction.N => Direction.E,
+            Direction.E => Direction.S,
+            Direction.S => Direction.W,
+            Direction.W => Direction.N,
+            _ => throw new ArgumentException($"Unknown direction {direction}", nameof(direction))
+        };
+    }
 }
 
 public enum Direction

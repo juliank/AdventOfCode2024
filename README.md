@@ -47,4 +47,4 @@ Missing solutions and suggestions for improvements, for when time might be avail
 
 ## Puzzles
 
-- Puzzle N: ...
+- Puzzle 6: Part 2 works on the example input, but yields a wrong (too low) result.
