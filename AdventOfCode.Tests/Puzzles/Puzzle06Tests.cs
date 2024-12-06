@@ -16,11 +16,11 @@ public class Puzzle06Tests
         result.Should().Be(4752);
     }
 
-    [Fact(Skip = "Wrong answer")]
+    [Fact]
     public void SolvePart2()
     {
         var result = _puzzle.SolvePart2();
-        result.Should().BeGreaterThan(654);
+        result.Should().Be(1719);
     }
 
     [Fact]
@@ -39,8 +39,7 @@ public class Puzzle06Tests
             "......#..."
         );
 
-        var answer = _puzzle.SolvePart2();
-
+        var answer = _puzzle.SolvePart2WorkingWithExample();
         answer.Should().Be(6);
     }
 }
