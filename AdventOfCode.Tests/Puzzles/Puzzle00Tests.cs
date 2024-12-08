@@ -9,14 +9,14 @@ public class Puzzle00Tests
         _puzzle = new Puzzle00();
     }
 
-    // [Fact]
+    // [Fact(Skip = "Not yet implemented")]
     public void SolvePart1()
     {
         var result = _puzzle.SolvePart1();
         result.Should().Be(0);
     }
 
-    // [Fact]
+    // [Fact(Skip = "Not yet implemented")]
     public void SolvePart2()
     {
         var result = _puzzle.SolvePart2();

@@ -31,12 +31,18 @@ Missing solutions and suggestions for improvements, for when time might be avail
 
 ## General
 
+- `Puzzle`: Provide a default (virtual) implementation for `ParseInput` => return string item
 - `BoundedPoint`:
   - Unit tests (especially on `TryGetDirection`)
   - Can all `TryGetX` methods be removed (in favor of `TryGetDirection`)?
 - `Direction`:
   - Missing comments on new directions
   - Better naming of `D2Extended`? (and similar for 3D?)
+- Make it possible to flag a solution (of a part) as "time consuming"?
+  - This is done manually today, e.g. for puzzle 6 part 2
+  - Only run the actual solution when targeting the specific puzzle
+  - When running with "all", return the hard-coded answer
+  - When running tests, return the hard-coded answer
 - Auto-post answer?
   - Use same session cookie as when auto-loading input
   - Endpoint is `https://adventofcode.com/{YEAR}/day/{DAY}/answer`
