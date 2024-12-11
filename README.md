@@ -32,6 +32,10 @@ Missing solutions and suggestions for improvements, for when time might be avail
 ## General
 
 - `Puzzle`: Provide a default (virtual) implementation for `ParseInput` => return string item
+- `Boundary`: New class (record?) representing min/max values for a point
+  - Methods `bool Is[Within|OutOf]Bounds(Point point)`
+  - "Inverse" methods on `Point` (taking a `Boundary`)?
+  - Can replace usage of `BoundedPoint`?
 - `BoundedPoint`:
   - Unit tests (especially on `TryGetDirection`)
   - Can all `TryGetX` methods be removed (in favor of `TryGetDirection`)?
