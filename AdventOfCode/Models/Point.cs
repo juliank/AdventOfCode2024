@@ -31,6 +31,18 @@ public readonly record struct Point(int X, int Y, int Z = 0)
         };
     }
 
+    public bool IsWithin(Boundary boundary)
+    {
+        // Comparing against a nullable that is null will always yield false,
+        // so there is no need to check HasValue
+        if (X < boundary.MinX || Y < boundary.MinY || Z < boundary.MinZ ||
+            X > boundary.MaxX || Y > boundary.MaxY || Z > boundary.MaxZ)
+        {
+            return false;
+        }
+        return true;
+    }
+
     /// <summary>
     /// Get the point north (Y-1) of the current
     /// </summary>

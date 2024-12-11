@@ -21,11 +21,18 @@ public class Puzzle04 : Puzzle<string, long>
             return field;
         }
     } = [];
+    
+    Boundary _boundary = default!;
 
     public override long SolvePart1()
     {
         var rows = WordSearch.Length;
         var columns = WordSearch[0].Length;
+        _boundary = new Boundary
+        {
+            MinX = 0, MaxX = columns - 1,
+            MinY = 0, MaxY = rows - 1
+        };
 
         var hitCount = 0;
 
@@ -33,11 +40,7 @@ public class Puzzle04 : Puzzle<string, long>
         {
             for (int x = 0; x < columns; x++)
             {
-                var p = new BoundedPoint(new Point(x, y))
-                {
-                    MinX = 0, MaxX = columns - 1,
-                    MinY = 0, MaxY = rows - 1
-                };
+                var p = new Point(x, y);
                 var hitsAtPoint = HasWord(p, "XMAS", Directions.D2Extended);
                 hitCount += hitsAtPoint.Count;
             }
@@ -50,6 +53,11 @@ public class Puzzle04 : Puzzle<string, long>
     {
         var rows = WordSearch.Length;
         var columns = WordSearch[0].Length;
+        _boundary = new Boundary
+        {
+            MinX = 0, MaxX = columns - 1,
+            MinY = 0, MaxY = rows - 1
+        };
 
         var aPoints = new List<Point>();
 
@@ -57,15 +65,11 @@ public class Puzzle04 : Puzzle<string, long>
         {
             for (int x = 0; x < columns; x++)
             {
-                var p = new BoundedPoint(new Point(x, y))
-                {
-                    MinX = 0, MaxX = columns - 1,
-                    MinY = 0, MaxY = rows - 1
-                };
+                var p = new Point(x, y);
                 var hitsAtPoint = HasWord(p, "MAS", Direction.NE, Direction.SE, Direction.SW, Direction.NW);
                 foreach (var direction in hitsAtPoint)
                 {
-                    aPoints.Add(p.Point.Get(direction)); // Add the point of the A letter to the list
+                    aPoints.Add(p.Get(direction)); // Add the point of the A letter to the list
                 }
             }
         }
@@ -81,9 +85,9 @@ public class Puzzle04 : Puzzle<string, long>
         return inputItem;
     }
 
-    private List<Direction> HasWord(BoundedPoint bp, string word, params Direction[] inDirections)
+    private List<Direction> HasWord(Point point, string word, params Direction[] inDirections)
     {
-        if (WordSearch[bp.Point.Y][bp.Point.X] != word[0])
+        if (WordSearch[point.Y][point.X] != word[0])
         {
             return [];
         }
@@ -92,10 +96,10 @@ public class Puzzle04 : Puzzle<string, long>
         inDirections ??= Directions.D2Extended;
         foreach (var direction in inDirections)
         {
-            if (bp.TryGetDirection(direction, out var nextPoint))
+            var nextPoint = point.Get(direction);
+            if (nextPoint.IsWithin(_boundary))
             {
-                var nextBp = bp with { Point = nextPoint };
-                if (HasWord(direction, nextBp, word[1..]))
+                if (HasWord(direction, nextPoint, word[1..]))
                 {
                     directionsWithWord.Add(direction);
                 }
@@ -105,9 +109,9 @@ public class Puzzle04 : Puzzle<string, long>
         return directionsWithWord;
     }
 
-    private bool HasWord(Direction direction, BoundedPoint bp, string word)
+    private bool HasWord(Direction direction, Point point, string word)
     {
-        if (WordSearch[bp.Point.Y][bp.Point.X] != word[0])
+        if (WordSearch[point.Y][point.X] != word[0])
         {
             return false;
         }
@@ -117,12 +121,12 @@ public class Puzzle04 : Puzzle<string, long>
             return true;
         }
 
-        if (!bp.TryGetDirection(direction, out var nextPoint))
+        var nextPoint = point.Get(direction);
+        if (!nextPoint.IsWithin(_boundary))
         {
             return false;
         }
 
-        var nextBp = bp with { Point = nextPoint };
-        return HasWord(direction, nextBp, word[1..]);
+        return HasWord(direction, nextPoint, word[1..]);
     }
 }
