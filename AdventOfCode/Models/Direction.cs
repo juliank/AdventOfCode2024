@@ -15,12 +15,12 @@ public static class Directions
 
     public static Direction Rotate(this Direction direction, int degrees)
     {
-        if (degrees != 90)
+        if (degrees is not (90 or 180 or 270))
         {
-            throw new ArgumentOutOfRangeException(nameof(degrees), "Only 90 is currently supported");
+            throw new ArgumentOutOfRangeException(nameof(degrees), "Only 90, 180 and 270 are currently supported");
         }
 
-        return direction switch
+        var nextDirection = direction switch
         {
             Direction.N => Direction.E,
             Direction.E => Direction.S,
@@ -28,6 +28,31 @@ public static class Directions
             Direction.W => Direction.N,
             _ => throw new ArgumentException($"Unknown direction {direction}", nameof(direction))
         };
+        if (degrees is 180 or 270)
+        {
+            // Just do one more rotation
+            nextDirection = nextDirection switch
+            {
+                Direction.N => Direction.E,
+                Direction.E => Direction.S,
+                Direction.S => Direction.W,
+                Direction.W => Direction.N,
+                _ => throw new ArgumentException($"Unknown direction {direction}", nameof(direction))
+            };
+        }
+        if (degrees is 270)
+        {
+            // Just do one more rotation
+            nextDirection = nextDirection switch
+            {
+                Direction.N => Direction.E,
+                Direction.E => Direction.S,
+                Direction.S => Direction.W,
+                Direction.W => Direction.N,
+                _ => throw new ArgumentException($"Unknown direction {direction}", nameof(direction))
+            };
+        }
+        return nextDirection;
     }
 }
 
