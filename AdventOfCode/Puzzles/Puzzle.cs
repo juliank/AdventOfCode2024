@@ -32,6 +32,69 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
         }
     }
 
+    private readonly Dictionary<Point, char> _inputMap = [];
+
+    /// <summary>
+    /// For puzzles where the input is treated like a block of text (i.e. lines
+    /// of strings), this property can be used as a map where the key is a point
+    /// in the map and the value is the character value at that specific point.
+    /// </summary>
+    protected Dictionary<Point, char> InputMap
+    {
+        get
+        {
+            if (typeof(TInput) != typeof(string))
+            {
+                throw new ArgumentException($"{nameof(InputMap)} can only be used when {nameof(TInput)} is of the type string.");
+            }
+            if (_inputMap.Count == 0)
+            {
+                ProcessInput();
+            }
+            return _inputMap;
+        }
+    }
+
+    /// <summary>
+    /// Boundary for <see cref="InputMap"/>.
+    /// </summary>
+    protected Boundary Boundary
+    {
+        get
+        {
+            if (_inputMap.Count == 0)
+            {
+                // Touching input map, to get both the type check and loading of the map
+                var _ = InputMap;
+            }
+            return field;
+        }
+
+        private set;
+    } = new();
+
+    private void ProcessInput()
+    {
+        // InputEntries[y][x] (rows,columns)
+        var rows = InputEntries.Count;
+        var columns = (InputEntries[0] as string)!.Length;
+        Boundary = new Boundary
+        {
+            MinX = 0, MaxX = columns - 1,
+            MinY = 0, MaxY = rows - 1
+        };
+
+        for (var y = 0; y < rows; y++)
+        {
+            for (var x = 0; x < columns; x++)
+            {
+                var position = new Point(x, y);
+                var plant = (InputEntries[y] as string)![x];
+                _inputMap.Add(position, plant);
+            }
+        }
+    }
+
     /// <summary>
     /// Alternate ctor to allow creating the puzzle with a hardcode set of entries (for easier testing).
     /// </summary>

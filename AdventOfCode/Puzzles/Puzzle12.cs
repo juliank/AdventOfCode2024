@@ -8,14 +8,11 @@ public class Puzzle12 : Puzzle<string, long>
 
     public Puzzle12(params IEnumerable<string> inputEntries) : base(PuzzleId, inputEntries) { }
 
-    private readonly Dictionary<Point, char> _map = [];
-
     // Only the Point is needed for the key, but we include the char for easier debugging
     private readonly Dictionary<(char, Point), HashSet<Point>> _gardenPlots = [];
 
     public override long SolvePart1()
     {
-        ProcessInput();
         CreateGardenPlots();
 
         var totalFencingPrice = 0L;
@@ -32,7 +29,6 @@ public class Puzzle12 : Puzzle<string, long>
 
     public override long SolvePart2()
     {
-        ProcessInput();
         CreateGardenPlots();
 
         var totalFencingPrice = 0L;
@@ -228,7 +224,7 @@ public class Puzzle12 : Puzzle<string, long>
     {
         var processed = new HashSet<Point>();
 
-        foreach (var (point, plant) in _map)
+        foreach (var (point, plant) in InputMap)
         {
             if (processed.Contains(point))
             {
@@ -256,7 +252,7 @@ public class Puzzle12 : Puzzle<string, long>
                 continue;
             }
 
-            if (_map.TryGetValue(neighbor, out var neighborPlant) && plant == neighborPlant)
+            if (InputMap.TryGetValue(neighbor, out var neighborPlant) && plant == neighborPlant)
             {
                 gardenPlot.Add(neighbor);
                 processed.Add(neighbor);
@@ -268,22 +264,5 @@ public class Puzzle12 : Puzzle<string, long>
     protected internal override string ParseInput(string inputItem)
     {
         return inputItem;
-    }
-
-    private void ProcessInput()
-    {
-        // InputEntries[y][x] (rows,columns)
-        var rows = InputEntries.Count;
-        var columns = InputEntries[0].Length;
-
-        for (var y = 0; y < rows; y++)
-        {
-            for (var x = 0; x < columns; x++)
-            {
-                var position = new Point(x, y);
-                var plant = InputEntries[y][x];
-                _map.Add(position, plant);
-            }
-        }
     }
 }

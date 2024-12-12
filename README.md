@@ -31,14 +31,12 @@ Missing solutions and suggestions for improvements, for when time might be avail
 
 ## General
 
-- `Puzzle`: Provide a default (virtual) implementation for `ParseInput` => return string item
-- `Boundary`: New class (record?) representing min/max values for a point
-  - Methods `bool Is[Within|OutOf]Bounds(Point point)`
-  - "Inverse" methods on `Point` (taking a `Boundary`)?
-  - Can replace usage of `BoundedPoint`?
-- `BoundedPoint`:
-  - Unit tests (especially on `TryGetDirection`)
-  - Can all `TryGetX` methods be removed (in favor of `TryGetDirection`)?
+- `Puzzle`:
+  - Provide a default (virtual) implementation for `ParseInput` => return string item
+  - Base class support for `InputMap` is in place. But can this be made more generic?
+    - It now only supports `Dictionary<Point, char>` (for when `TInput` is `string`),
+      but it could also be useful with `Dictionary<Point, int>` (see e.g. `Puzzle10`).
+- `BoundedPoint`: Replace with the new `Boundary` where possible
 - `Direction`:
   - Missing comments on new directions
   - Better naming of `D2Extended`? (and similar for 3D?)
