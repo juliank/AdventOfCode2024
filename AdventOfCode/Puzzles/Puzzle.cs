@@ -167,10 +167,16 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
     /// <param name="line">One line from the puzzle input.</param>
     protected internal virtual TInput ParseAlternateInput(string line) => ParseInput(line);
 
+    private string[]? _testInput;
+
+    internal void SetTestInput(params IEnumerable<string> testInput)
+    {
+        _inputEntries = null; // Must clear, in case the has been set using the alternate constructor
+        _testInput = testInput.ToArray();
+    }
+
     private List<TInput> LoadInput()
     {
-        var path = FileHelper.GetInputFilePath(Id);
-
         var baseMethod = typeof(Puzzle<,>).GetMethod(nameof(ParseAlternateInput), BindingFlags.Instance | BindingFlags.NonPublic)!;
         var derivedMethod = GetType().GetMethod(nameof(ParseAlternateInput), BindingFlags.Instance | BindingFlags.NonPublic)!;
 
@@ -178,8 +184,15 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
         var alternateParsingImplemented = baseMethod.DeclaringType!.Name != derivedMethod.DeclaringType!.Name;
         var useAlternateParsing = isInvokedFromPart2 && alternateParsingImplemented;
 
+        string[]? lines = _testInput;
+        if (lines == null)
+        {
+            var path = FileHelper.GetInputFilePath(Id);
+            lines = File.ReadAllLines(path);
+        }
+
         var entries = new List<TInput>();
-        foreach (var line in File.ReadAllLines(path))
+        foreach (var line in lines)
         {
             var parsedInput = useAlternateParsing ? ParseAlternateInput(line) : ParseInput(line);
             entries.Add(parsedInput);
