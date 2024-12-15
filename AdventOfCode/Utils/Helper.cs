@@ -24,6 +24,7 @@ public static class Helper
     /// <param name="printBorder">Set to true if the print should include a border around the map.</param>
     public static void PrintMap(Boundary boundary, IEnumerable<(Point P, char C)> points, char w = ' ', bool printBorder = false)
     {
+        points = points.ToList(); // Enumerate for better lookup
         if (printBorder)
         {
             Console.WriteLine(new string('=', boundary.MaxX!.Value + 5));
@@ -39,7 +40,6 @@ public static class Helper
 
             for (var x = 0; x <= boundary.MaxX; x++)
             {
-                // var c = points.Contains(new Point(x, y)) ? 'X' : ' ';
                 var point = points.FirstOrDefault(p => p.P == new Point(x, y));
                 var c = point == default ? w : point.C;
                 line.Append(c);

@@ -16,11 +16,11 @@ public class Puzzle14Tests
         result.Should().BeGreaterThan(217337280);
     }
 
-    [Fact(Skip = "Not yet implemented")]
+    [Fact]
     public void SolvePart2()
     {
         var result = _puzzle.SolvePart2();
-        result.Should().Be(0);
+        result.Should().Be(7892);
     }
 
     [Fact]
