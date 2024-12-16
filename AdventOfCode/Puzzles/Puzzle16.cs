@@ -14,6 +14,7 @@ public class Puzzle16 : Puzzle<string, long>
     private readonly int[] _rotations = [0, 90, 270]; // Front, Right, Left
     private const char F = 'F', R = 'R', L = 'L';
     private readonly char[] _headings = [ F, R, L ];
+    private readonly Dictionary<Point, long> _positionPoints = []; // The (currently) best score at the given position
 
     private Boundary _boundary = null!; // For easier debugging
     internal bool PrintMap = false;
@@ -27,7 +28,7 @@ public class Puzzle16 : Puzzle<string, long>
         var maxY = _walls.Max(w => w.Y);
         _boundary = new Boundary(0, 0, maxX, maxY);
 
-        var path = GetShortestPath(_startPoint, Direction.E, []);
+        var path = GetShortestPath(_startPoint, Direction.E, [], []);
         var score = CalculateScore(path);
         return score;
     }
@@ -43,7 +44,7 @@ public class Puzzle16 : Puzzle<string, long>
         return points - 1; // There is an off-by-one error somewhere...
     }
 
-    private List<char> GetShortestPath(Point position, Direction direction, HashSet<Point> visitedPoints)
+    private List<char> GetShortestPath(Point position, Direction direction, HashSet<Point> visitedPoints, List<char> trail)
     {
         PrintMapToConsole(position, direction, visitedPoints);
         // visitedPoints.Add(position);
@@ -68,7 +69,23 @@ public class Puzzle16 : Puzzle<string, long>
             {
                 continue; // Loop
             }
-            var path = GetShortestPath(nextPosition, nextDirection, visitedPoints);
+
+            var t = trail.Append(heading);
+            if (heading != F)
+            {
+                t = t.Append(F);
+            }
+
+            var nextTrail = t.ToList();
+            var nextTrailScore = CalculateScore(nextTrail);
+            if (_positionPoints.TryGetValue(nextPosition, out var nextPositionScore))
+            {
+                if (nextTrailScore > nextPositionScore)
+                {
+                    continue; // No need to continue this path, as we're already above the (current) best score for the next point
+                }
+            }
+            var path = GetShortestPath(nextPosition, nextDirection, visitedPoints, nextTrail);
             if (path.Count == 0)
             {
                 continue; // Path didn't lead to the end point
@@ -83,7 +100,20 @@ public class Puzzle16 : Puzzle<string, long>
             possiblePaths.Add(path);
         }
 
-        return possiblePaths.OrderBy(CalculateScore).FirstOrDefault() ?? [];
+        // return possiblePaths.OrderBy(CalculateScore).FirstOrDefault() ?? [];
+        // return possiblePaths.OrderBy(p => p.Count).FirstOrDefault() ?? [];
+        if (possiblePaths.Count == 0)
+        {
+            return [];
+        }
+
+        var bestPath = possiblePaths.Select(p => (Path: p, Score: CalculateScore(p))).OrderBy(p => p.Score).First();
+        if (_positionPoints.TryGetValue(position, out var positionScore) || bestPath.Score < positionScore)
+        {
+            _positionPoints[position] = bestPath.Score;
+        }
+
+        return bestPath.Path;
     }
 
     private void PrintMapToConsole(Point position, Direction direction, HashSet<Point> visitedPoints)
