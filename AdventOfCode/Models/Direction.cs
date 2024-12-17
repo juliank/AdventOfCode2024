@@ -15,9 +15,14 @@ public static class Directions
 
     public static Direction Rotate(this Direction direction, int degrees)
     {
-        if (degrees is not (90 or 180 or 270))
+        if (degrees is not (0 or 90 or 180 or 270))
         {
-            throw new ArgumentOutOfRangeException(nameof(degrees), "Only 90, 180 and 270 are currently supported");
+            throw new ArgumentOutOfRangeException(nameof(degrees), "Only 0, 90, 180 and 270 are currently supported");
+        }
+
+        if (degrees == 0)
+        {
+            return direction;
         }
 
         var nextDirection = direction switch
