@@ -31,8 +31,14 @@ public class Puzzle16 : Puzzle<string, long>
         // var path = GetShortestPath(_startPoint, Direction.E, [], []);
         // var score = CalculateScore(path);
         var visitedPoints = new Dictionary<Point, long>();
+        
         ScorePaths(_endPoint, visitedPoints);
         var score = visitedPoints[_startPoint];
+        // The last implementation (using HashSetTree) ran through:
+        // Solution time: 00:05:04.9192450
+        // Result is: [105500]
+        // But 105500 not the right answer, it is too high :-|
+        // (It is not an off-by-one error - 105449 is also too high...)
         return score;
     }
 
