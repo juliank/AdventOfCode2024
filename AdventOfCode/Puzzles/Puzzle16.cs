@@ -28,11 +28,14 @@ public class Puzzle16 : Puzzle<string, long>
         var maxY = _walls.Max(w => w.Y);
         _boundary = new Boundary(0, 0, maxX, maxY);
 
-        var path = GetShortestPath(_startPoint, Direction.E, [], []);
-        var score = CalculateScore(path);
+        // var path = GetShortestPath(_startPoint, Direction.E, [], []);
+        // var score = CalculateScore(path);
+        var visitedPoints = new Dictionary<Point, (List<Point> Path, long Score)>();
+        ScorePaths(_endPoint, visitedPoints, []);
+        var score = visitedPoints[_startPoint].Score;
         return score;
     }
-    
+
     // Try the following:
     // - Traverse from end
     // - Keep track of the path
@@ -43,6 +46,110 @@ public class Puzzle16 : Puzzle<string, long>
     //   - Else: Abort traversal
     // - Continue until start point
     //   - Remember start point direction!
+
+    private void ScorePaths(Point position, Dictionary<Point, (List<Point> Path, long Score)> visitedPoints, List<Point> path)
+    {
+        List<Point> newPath = [ position, ..path ];
+        
+        var score = ScorePath(newPath);
+        if (visitedPoints.TryGetValue(position, out var visitedPosition))
+        {
+            if (score < visitedPosition.Score)
+            {
+                visitedPoints[position] = (newPath, score);
+            }
+            else
+            {
+                // There is no need to continue with this path, since we've
+                // already been at this point with a better score
+                return;
+            }
+        }
+        else
+        {
+            visitedPoints[position] = (newPath, score);
+        }
+
+        if (position == _startPoint)
+        {
+            // We've traversed the whole map
+            return;
+        }
+
+        foreach (var direction in Directions.D2)
+        {
+            var nextPosition = position.Get(direction);
+            // Don't run into walls, and don't backtrack on the path we're already on
+            if (_walls.Contains(nextPosition) || path.Contains(nextPosition))
+            {
+                continue;
+            }
+            ScorePaths(nextPosition, visitedPoints, newPath);
+        }
+    }
+
+    private long ScorePath(List<Point> path)
+    {
+        if (path.Count == 1)
+        {
+            return 0;
+        }
+
+        if (path.Count == 2)
+        {
+            return 1;
+        }
+
+        var score = 0L;
+        for (int i = path.Count - 1; i >= 1; i--)
+        {
+            var p = path[i];
+            var p1 = path[i - 1];
+            Point p2;
+            if (i == 1)
+            {
+                // Special handling when we're at the first point of the path
+                if (p1 == _startPoint)
+                {
+                    // Since the puzzle text says that we should start in the East direction
+                    // from the starting point, we "simulate" a point prior to this one step
+                    // in the West direction
+                    p2 = _startPoint.Get(Direction.W);
+                }
+                else
+                {
+                    // We create a virtual point one step further in a "straight" direction
+                    var dx = p.X - p1.X;
+                    var dy = p.Y - p1.Y;
+                    p2 = new Point(p1.X + dx, p1.Y + dy);
+                }
+            }
+            else
+            {
+                p2 = path[i - 2];
+            }
+            if ((p.X == p1.X && p1.X == p2.X) ||
+                (p.Y == p1.Y && p1.Y == p2.Y) )
+            {
+                // - p is "in line" with the two previous points
+                // - We can get to p from p1 by a simple step forward
+                // - Score => 1
+                score += 1;
+            }
+            else
+            {
+                // - p is not "in line" with the two previous points
+                // - We must first *rotate* at p1 (1000) and *then* move a step forward to p
+                // - Score => 1001
+                score += 1001;
+            }
+        }
+
+        // We must subtract one point because of the virtual p2 we create in the final iteration
+        // score--;
+
+        return score;
+    }
 
     private long CalculateScore(List<char> path)
     {
