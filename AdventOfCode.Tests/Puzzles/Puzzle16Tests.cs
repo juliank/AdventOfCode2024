@@ -47,4 +47,33 @@ public class Puzzle16Tests
         var result = _puzzle.SolvePart1();
         result.Should().Be(7036);
     }
+
+    [Fact]
+    public void TestPart1Example2()
+    {
+        // Note that the path shown above includes one 90-degree turn as the very first move,
+        // rotating the Reindeer from facing East to facing North.
+        _puzzle = new Puzzle16(
+            "#################",
+            "#...#...#...#..E#",
+            "#.#.#.#.#.#.#.#.#",
+            "#.#.#.#...#...#.#",
+            "#.#.#.#.###.#.#.#",
+            "#...#.#.#.....#.#",
+            "#.#.#.#.#.#####.#",
+            "#.#...#.#.#.....#",
+            "#.#.#####.#.###.#",
+            "#.#.#.......#...#",
+            "#.#.###.#####.###",
+            "#.#.#...#.....#.#",
+            "#.#.#.#####.###.#",
+            "#.#.#.........#.#",
+            "#.#.#.#########.#",
+            "#S#.............#",
+            "#################"
+        );
+        // _puzzle.PrintMap = true;
+        var result = _puzzle.SolvePart1();
+        result.Should().Be(11048);
+    }
 }
