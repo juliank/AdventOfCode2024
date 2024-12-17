@@ -30,9 +30,9 @@ public class Puzzle16 : Puzzle<string, long>
 
         // var path = GetShortestPath(_startPoint, Direction.E, [], []);
         // var score = CalculateScore(path);
-        var visitedPoints = new Dictionary<Point, (List<Point> Path, long Score)>();
-        ScorePaths(_endPoint, visitedPoints, []);
-        var score = visitedPoints[_startPoint].Score;
+        var visitedPoints = new Dictionary<Point, long>();
+        ScorePaths(_endPoint, visitedPoints);
+        var score = visitedPoints[_startPoint];
         return score;
     }
 
@@ -47,16 +47,20 @@ public class Puzzle16 : Puzzle<string, long>
     // - Continue until start point
     //   - Remember start point direction!
 
-    private void ScorePaths(Point position, Dictionary<Point, (List<Point> Path, long Score)> visitedPoints, List<Point> path)
+    private void ScorePaths(Point position, Dictionary<Point, long> visitedPoints, HashSetTree<Point>? parent = null)
     {
-        List<Point> newPath = [ position, ..path ];
-        
-        var score = ScorePath(newPath);
-        if (visitedPoints.TryGetValue(position, out var visitedPosition))
+        // List<Point> newPath = [ position, ..path ];
+        var node = new HashSetTree<Point>(position);
+        parent?.Add(node); // If parent is null, this is the root node
+
+        PrintMapToConsole(position, node.GetParents());
+
+        var score = ScorePath(node.GetParents().ToList());
+        if (visitedPoints.TryGetValue(position, out var currentBestScore))
         {
-            if (score < visitedPosition.Score)
+            if (score < currentBestScore)
             {
-                visitedPoints[position] = (newPath, score);
+                visitedPoints[position] = score;
             }
             else
             {
@@ -67,7 +71,7 @@ public class Puzzle16 : Puzzle<string, long>
         }
         else
         {
-            visitedPoints[position] = (newPath, score);
+            visitedPoints[position] = score;
         }
 
         if (position == _startPoint)
@@ -80,11 +84,11 @@ public class Puzzle16 : Puzzle<string, long>
         {
             var nextPosition = position.Get(direction);
             // Don't run into walls, and don't backtrack on the path we're already on
-            if (_walls.Contains(nextPosition) || path.Contains(nextPosition))
+            if (_walls.Contains(nextPosition) || parent?.Value == nextPosition)
             {
                 continue;
             }
-            ScorePaths(nextPosition, visitedPoints, newPath);
+            ScorePaths(nextPosition, visitedPoints, node);
         }
     }
 
@@ -234,6 +238,20 @@ public class Puzzle16 : Puzzle<string, long>
         return bestPath.Path;
     }
 
+    private void PrintMapToConsole(Point position, IEnumerable<Point> path)//, IEnumerable<Point>? visitedPoints = null)
+    {
+        var walls = _walls.Select(w => (w, '#'));
+        var e = (_endPoint, 'E');
+        var s = (_startPoint, 'S');
+        var pos = (position, '*');
+        var pat = path.Select(vp => (vp, '.'));
+        // visitedPoints ??= [];
+        if (PrintMap)
+        {
+            Console.WriteLine();
+            Helper.PrintMap(_boundary, [pos, e, ..pat, ..walls]);
+        }
+    }
     private void PrintMapToConsole(Point position, Direction direction, HashSet<Point> visitedPoints)
     {
         var walls = _walls.Select(w => (w, '#'));
