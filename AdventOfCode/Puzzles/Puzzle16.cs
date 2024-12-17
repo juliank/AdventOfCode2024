@@ -32,6 +32,17 @@ public class Puzzle16 : Puzzle<string, long>
         var score = CalculateScore(path);
         return score;
     }
+    
+    // Try the following:
+    // - Traverse from end
+    // - Keep track of the path
+    //   - Create method for calculating points based on a list of points
+    // - For every visited step
+    //   - If: first visit: cache (point, path, score)
+    //   - If else: score is lower than cached score: update cache
+    //   - Else: Abort traversal
+    // - Continue until start point
+    //   - Remember start point direction!
 
     private long CalculateScore(List<char> path)
     {
