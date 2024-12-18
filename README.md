@@ -57,3 +57,4 @@ Missing solutions and suggestions for improvements, for when time might be avail
 
 - Puzzle 6: Part 2 solved using brute force. Smarter approach works for the example input, but something is missing for the full puzzle...
 - Puzzle 16: See `wip/16` for initial attempt. Works on example, but results in stack overflow on real input.
+- Puzzle 18: Part 2 takes a few seconds to process, so a hard-coded value is returned. Can it be improved?
