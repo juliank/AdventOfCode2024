@@ -30,16 +30,43 @@ public class Puzzle16 : Puzzle<string, long>
 
         // var path = GetShortestPath(_startPoint, Direction.E, [], []);
         // var score = CalculateScore(path);
-        var visitedPoints = new Dictionary<Point, long>();
+        // var visitedPoints = new Dictionary<Point, long>();
         
-        ScorePaths(_endPoint, visitedPoints);
-        var score = visitedPoints[_startPoint];
+        // ScorePaths(_endPoint, visitedPoints);
+        // var score = visitedPoints[_startPoint];
+        // return score;
         // The last implementation (using HashSetTree) ran through:
         // Solution time: 00:05:04.9192450
         // Result is: [105500]
         // But 105500 not the right answer, it is too high :-|
         // (It is not an off-by-one error - 105449 is also too high...)
-        return score;
+
+        int CostFunction(Point? previous, Point current, Point next)
+        {
+            // When current is the starting point, we fake that the previous one
+            // is the point to the west, since the initial traversal direction
+            // from the starting point should be westwards.
+            previous ??= _startPoint.GetE();
+
+            // If the previous and the next point are "in line", we're heading
+            // one step forward from current to next => cost is 1.
+            // If not, it means we'll have to first take a turn at current (cost 1000),
+            // and then move one step forward to next (cost 1) => cost is 1001
+            return previous.Value.X == next.X || previous.Value.Y == next.Y ? 1 : 1001;
+        }
+
+        var path = AStarPathfinding.FindShortestPath(_startPoint, _endPoint, _boundary, _walls, CostFunction);
+        
+        // PrintMapToConsole(path.Last(), path);
+        var score = CostFunction(null, path[0], path[1]);
+        for (int i = 2; i < path.Count - 1; i++)
+        {
+            score += CostFunction(path[i - 1], path[i], path[i + 1]);
+        }
+        
+        return score + 1; // Not sure why, but there seems to be an off-by-one error somewhere...
+        // 105516 is too high (it is also slightly higher than the answer from the previous semi-successful attempt: 105500...)
+        // return score;
     }
 
     // Try the following:
@@ -252,7 +279,7 @@ public class Puzzle16 : Puzzle<string, long>
         var pos = (position, '*');
         var pat = path.Select(vp => (vp, '.'));
         // visitedPoints ??= [];
-        if (PrintMap)
+        // if (PrintMap)
         {
             Console.WriteLine();
             Helper.PrintMap(_boundary, [pos, e, ..pat, ..walls]);
