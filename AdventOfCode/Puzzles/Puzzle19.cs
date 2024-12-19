@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 
 namespace AdventOfCode.Puzzles;
 
@@ -27,16 +28,20 @@ public class Puzzle19 : Puzzle<string, long>
 
     private List<string> FindPossibleDesigns()
     {
-        var possibleDesigns = new List<string>();
-        foreach (var design in _desiredDesigns)
+        var possibleDesigns = new ConcurrentBag<string>();
+        var parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 16 // CPU has 16 logical processors
+        };
+        Parallel.ForEach(_desiredDesigns, parallelOptions, design =>
         {
             if (IsPossible(design, _towelPatterns))
             {
                 possibleDesigns.Add(design);
             }
-        }
+        });
 
-        return possibleDesigns;
+        return possibleDesigns.ToList();
     }
 
     private bool IsPossible(string design, DictionaryTree<char, bool> towelPatterns)
