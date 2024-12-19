@@ -10,11 +10,11 @@ public class Puzzle19Tests
         _puzzle = new Puzzle19();
     }
 
-    [Fact(Skip = "Wrong answer...")]
+    [Fact(Skip = "Too slow")]
     public void SolvePart1()
     {
         // Uncomment when debugging in Rider
-        // _puzzle = new Puzzle19(File.ReadLines("C:\\src\\personal\\AdventOfCode2024Input\\19.txt"));
+        _puzzle = new Puzzle19(File.ReadLines("C:\\src\\personal\\AdventOfCode2024Input\\19.txt"));
         var result = _puzzle.SolvePart1();
         result.Should().BeGreaterThan(0);
     }

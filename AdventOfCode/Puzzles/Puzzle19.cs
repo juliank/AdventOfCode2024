@@ -12,7 +12,7 @@ public class Puzzle19 : Puzzle<string, long>
     // Is this perhaps a good time to implement DirectoryTree?
     // Then we could have a tree where the *key* only consists of the color (char => easier lookup),
     // and the *value* is the bool indicating if the pattern is complete or not... 
-    private readonly HashSetTree<TowelColor> _towelPatterns = new(new TowelColor('\0'));
+    private readonly DictionaryTree<char, bool> _towelPatterns = new(false);
     
     private readonly List<string> _desiredDesigns = [];
 
@@ -20,6 +20,8 @@ public class Puzzle19 : Puzzle<string, long>
     {
         ProcessInput();
         var possibleDesigns = FindPossibleDesigns();
+        
+        // 352 is too low
         return possibleDesigns.Count;
     }
 
@@ -37,12 +39,10 @@ public class Puzzle19 : Puzzle<string, long>
         return possibleDesigns;
     }
 
-    // private bool IsPossible(string design, List<HashSetTree<TowelColor>> towelPatterns)
-    private bool IsPossible(string design, HashSetTree<TowelColor> towelPatterns)
+    private bool IsPossible(string design, DictionaryTree<char, bool> towelPatterns)
     {
-        var towelColor = new TowelColor(design[0]) { IsCompletePattern = design.Length == 1 };
-        HashSetTree<TowelColor>? match = towelPatterns.FirstOrDefault(tp => tp.Value.Color == towelColor.Color);
-        if (match == null)
+        var towelColor = design[0];
+        if (!towelPatterns.TryGetValue(towelColor, out var match))
         {
             return false;
         }
@@ -51,7 +51,7 @@ public class Puzzle19 : Puzzle<string, long>
         {
             // We're at the final character (color) of the desired design.
             // If we have a match that *is* (the last color of) a complete pattern, it is possible to make
-            return match.Value.IsCompletePattern;
+            return match.Value;
         }
 
         var remainingDesign = design[1..];
@@ -61,7 +61,7 @@ public class Puzzle19 : Puzzle<string, long>
             return true;
         }
 
-        if (match.Value.IsCompletePattern)
+        if (match.Value)
         {
             // If we're at the current match has a completely matching towel pattern,
             // we can continue checking the remaining design for all the available patterns.
@@ -83,34 +83,32 @@ public class Puzzle19 : Puzzle<string, long>
         // Process desired designs
         _desiredDesigns.AddRange(InputEntries.Skip(2));
     }
-    
-    record TowelColor(char Color)
-    {
-        public bool IsCompletePattern { get; set; }
-    }
 
     private void ProcessTowelPattern(string towelPattern)
     {
-        var root = _towelPatterns.FirstOrDefault(tp => tp.Value.Color == towelPattern[0]) ?? // Existing root for this towel pattern
-                   new HashSetTree<TowelColor>(new TowelColor(towelPattern[0])); // Towel pattern requires new root node
-        if (towelPattern.Length == 1)
+        var towelColor = towelPattern[0];
+        if (!_towelPatterns.TryGetValue(towelColor, out var root))
         {
-            root.Value.IsCompletePattern = true;
+            root = new DictionaryTree<char, bool>(towelPattern.Length == 1);
+            _towelPatterns.Add(towelColor, root);
         }
 
         var node = root;
         for (var i = 1; i < towelPattern.Length; i++)
         {
-            var nextNode = new HashSetTree<TowelColor>(new TowelColor(towelPattern[i]));
-            if (i == towelPattern.Length - 1)
+            towelColor = towelPattern[i];
+            if (!node.TryGetValue(towelColor, out var nextNode))
             {
-                nextNode.Value.IsCompletePattern = true;
+                nextNode = new DictionaryTree<char, bool>(i == towelPattern.Length - 1);
+                node.Add(towelColor, nextNode);
             }
-            node.Add(nextNode);
+
+            if (!nextNode.Value && i == towelPattern.Length - 1)
+            {
+                nextNode.Value = true;
+            }
             node = nextNode;
         }
-        
-        _towelPatterns.Add(root);
     }
 
     public override long SolvePart2()
