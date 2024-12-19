@@ -92,6 +92,10 @@ public class Puzzle19 : Puzzle<string, long>
             root = new DictionaryTree<char, bool>(towelPattern.Length == 1);
             _towelPatterns.Add(towelColor, root);
         }
+        if (!root.Value && towelPattern.Length == 1)
+        {
+            root.Value = true;
+        }
 
         var node = root;
         for (var i = 1; i < towelPattern.Length; i++)
