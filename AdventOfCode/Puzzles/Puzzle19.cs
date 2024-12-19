@@ -9,6 +9,9 @@ public class Puzzle19 : Puzzle<string, long>
 
     public Puzzle19(params IEnumerable<string> inputEntries) : base(PuzzleId, inputEntries) { }
 
+    // Is this perhaps a good time to implement DirectoryTree?
+    // Then we could have a tree where the *key* only consists of the color (char => easier lookup),
+    // and the *value* is the bool indicating if the pattern is complete or not... 
     private readonly HashSetTree<TowelColor> _towelPatterns = new(new TowelColor('\0'));
     
     private readonly List<string> _desiredDesigns = [];
@@ -57,8 +60,16 @@ public class Puzzle19 : Puzzle<string, long>
         {
             return true;
         }
-        var possibleWithOtherTowelPattern = IsPossible(remainingDesign, _towelPatterns);
-        return possibleWithOtherTowelPattern;
+
+        if (match.Value.IsCompletePattern)
+        {
+            // If we're at the current match has a completely matching towel pattern,
+            // we can continue checking the remaining design for all the available patterns.
+            var possibleWithOtherTowelPattern = IsPossible(remainingDesign, _towelPatterns);
+            return possibleWithOtherTowelPattern;
+        }
+
+        return false;
     }
 
     private void ProcessInput()

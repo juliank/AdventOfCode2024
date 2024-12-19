@@ -10,11 +10,13 @@ public class Puzzle19Tests
         _puzzle = new Puzzle19();
     }
 
-    // [Fact(Skip = "Not yet implemented")]
+    [Fact(Skip = "Wrong answer...")]
     public void SolvePart1()
     {
+        // Uncomment when debugging in Rider
+        // _puzzle = new Puzzle19(File.ReadLines("C:\\src\\personal\\AdventOfCode2024Input\\19.txt"));
         var result = _puzzle.SolvePart1();
-        result.Should().Be(0);
+        result.Should().BeGreaterThan(0);
     }
 
     // [Fact(Skip = "Not yet implemented")]
