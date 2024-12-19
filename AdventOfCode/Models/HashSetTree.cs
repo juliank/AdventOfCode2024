@@ -7,6 +7,7 @@ namespace AdventOfCode.Models;
 /// Initial inspiration: https://stackoverflow.com/a/942088/310001
 /// Implementation guided by Jetbrains AI Assistant
 /// </remarks>
+[DebuggerDisplay("{Value} (children: {Count})")]
 public class HashSetTree<TValue> : HashSet<HashSetTree<TValue>>
 {
     public HashSetTree(TValue value)
