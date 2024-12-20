@@ -31,7 +31,7 @@ public class Puzzle19 : Puzzle<string, long>
         var possibleDesigns = new ConcurrentBag<string>();
         var parallelOptions = new ParallelOptions
         {
-            MaxDegreeOfParallelism = 16 // CPU has 16 logical processors
+            MaxDegreeOfParallelism = Environment.ProcessorCount
         };
         Parallel.ForEach(_desiredDesigns, parallelOptions, design =>
         {
