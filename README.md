@@ -59,3 +59,6 @@ Missing solutions and suggestions for improvements, for when time might be avail
 - Puzzle 16: See `wip/16` for initial attempt. Using the A-star algorithm, we get a solution, but the answer is wrong. Works on both tests though.
 - Puzzle 17: Part 2 works on the test input, but running on the real input is to slow. Initial attempt to add caching resulted in an eternal loop.
 - Puzzle 18: Part 2 takes a few seconds to process, so a hard-coded value is returned. Can it be improved?
+- Puzzle 20:
+  - Part 1 is too slow
+  - Part 2 is not yet implemented
