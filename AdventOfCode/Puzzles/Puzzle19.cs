@@ -22,7 +22,8 @@ public class Puzzle19 : Puzzle<string, long>
         ProcessInput();
         var possibleDesigns = FindPossibleDesigns();
         
-        // 352 is too low
+        // Processing is *way* to slow. The puzzle ran for about 7 hours during a work day,
+        // so something must definitely be done... There is no memory leak though - steady at 10-20 MB :D
         return possibleDesigns.Count;
     }
 
@@ -31,7 +32,7 @@ public class Puzzle19 : Puzzle<string, long>
         var possibleDesigns = new ConcurrentBag<string>();
         var parallelOptions = new ParallelOptions
         {
-            MaxDegreeOfParallelism = Environment.ProcessorCount
+            MaxDegreeOfParallelism = Environment.ProcessorCount / 2 // Can't use all my CPU - got to work as well :-)
         };
         Parallel.ForEach(_desiredDesigns, parallelOptions, design =>
         {
