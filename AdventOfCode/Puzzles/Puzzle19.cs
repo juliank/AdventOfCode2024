@@ -16,8 +16,67 @@ public class Puzzle19 : Puzzle<string, long>
     private readonly DictionaryTree<char, bool> _towelPatterns = new(false);
     
     private readonly List<string> _desiredDesigns = [];
+    
+    // Must use ReadOnlyMemory (instead of ReadOnlyStruct) to allow usage as generic type argument
+    private readonly SortedDictionary<int, List<ReadOnlyMemory<char>>> _towelPatternsNew = new();
+    private readonly List<ReadOnlyMemory<char>> _desiredDesignsNew = [];
 
     public override long SolvePart1()
+    {
+        ProcessInputNew();
+        var possibleDesigns = FindPossibleDesignsNew();
+        return possibleDesigns.Count;
+    }
+
+    private List<string> FindPossibleDesignsNew()
+    {
+        var possibleDesigns = new List<string>();
+        foreach (var desiredDesign in _desiredDesignsNew)
+        {
+            if (IsPossible(desiredDesign))
+            {
+                possibleDesigns.Add(desiredDesign.ToString());
+            }
+        }
+        return possibleDesigns;
+    }
+
+    private bool IsPossible(ReadOnlyMemory<char> desiredDesign)
+    {
+        var isPossible = false;
+        
+        for (int length = desiredDesign.Length; length > 0; length--)
+        {
+            if (!_towelPatternsNew.TryGetValue(length, out var towelPatterns))
+            {
+                continue;
+            }
+
+            if (desiredDesign.Span.StartsWith(towelPatterns[0].Span))
+            {
+                
+            }
+        }
+
+        return isPossible;
+    }
+
+    private void ProcessInputNew()
+    {
+        foreach (var towelPattern in InputEntries[0].Split(',', StringSplitOptions.TrimEntries))
+        {
+            if (!_towelPatternsNew.TryGetValue(towelPattern.Length, out var towelPatterns))
+            {
+                towelPatterns = new();
+                _towelPatternsNew.Add(towelPattern.Length, towelPatterns);
+            }
+            towelPatterns.Add(towelPattern.AsMemory());
+        }
+        
+        _desiredDesignsNew.AddRange(InputEntries.Skip(2).Select(design => design.AsMemory()));
+    }
+
+    public long SolvePart1Old()
     {
         ProcessInput();
         var possibleDesigns = FindPossibleDesigns();
