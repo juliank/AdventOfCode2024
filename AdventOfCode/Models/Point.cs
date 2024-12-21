@@ -31,6 +31,31 @@ public readonly record struct Point(int X, int Y, int Z = 0)
         };
     }
 
+    public Direction GetDirectionTo(Point point)
+    {
+        if (this.ManhattanDistanceTo(point) != 1)
+        {
+            throw new InvalidOperationException($"{point} is not an immediate neighbor of {this}");
+        }
+        if (Z != 0 || point.Z != 0)
+        {
+            throw new NotImplementedException($"Missing support to find direction from {this} to {point}");
+        }
+
+        if (point.X == X) // North or South
+        {
+            // Higher Y values in the south direction
+            return point.Y < Y ? Direction.N : Direction.S;
+        }
+        if (point.Y == Y) // East or West
+        {
+            // Higher X values in the east direction
+            return point.X < X ? Direction.W : Direction.E;
+        }
+
+        throw new NotImplementedException($"Missing support to find direction from {this} to {point}");
+    }
+
     public bool IsWithin(Boundary boundary)
     {
         // Comparing against a nullable that is null will always yield false,
