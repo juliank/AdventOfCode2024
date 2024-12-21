@@ -79,14 +79,13 @@ public class Puzzle21 : Puzzle<string, long>
 
     private List<List<Direction?>> PushKeyPad<T>(KeyPad<T> keyPad, List<T?> values) where T : struct
     {
-        List<List<Direction?>> moveSequences = [];
+        List<List<Direction?>> movesSequences = [];
         for (var i = 0; i < values.Count; i++)
         {
             // Move to button with given value
-            var moveSequence = keyPad.MoveTo(values[i]);
-            // Every move sequence should end with a push of the Action button (button with the "null" direction)
-            // moveSequences.Add([..moveSequence, null]);
-            moveSequences.Add([..moveSequence.OrderBy(d => d switch
+            T? value = values[i];
+            var movesSequence = keyPad.MoveTo(value);
+            var orderedMovesSequence = movesSequence.OrderBy(d => d switch
             {
                 // Ordering of sequences was initially added to ease debugging,
                 // but it actually helped to make 3 out of 5 example codes correct...
@@ -96,10 +95,32 @@ public class Puzzle21 : Puzzle<string, long>
                 Direction.S => 2,
                 Direction.N => 3,
                 _ => throw new ArgumentOutOfRangeException()
-            }), null]);
+            });
+            
+            // Every move sequence should end with a push of the Action button (button with the "null" direction)
+            List<Direction?> sequences = [..orderedMovesSequence, null];
+            var str = SequenceToString(sequences);
+            Console.WriteLine($"{value?.ToString() ?? "A"}: {str}");
+            movesSequences.Add(sequences);
         }
 
-        return moveSequences;
+        return movesSequences;
+    }
+
+    internal static string SequenceToString(List<Direction?> sequence)
+    {
+        var str = sequence.Select(d =>
+        {
+            return d switch
+            {
+                Direction.N => '^',
+                Direction.S => 'v',
+                Direction.E => '>',
+                Direction.W => '<',
+                _ => 'A'
+            };
+        }).CreateString();
+        return str;
     }
 
     public override long SolvePart2()
