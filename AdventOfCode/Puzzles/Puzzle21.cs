@@ -13,6 +13,8 @@ public class Puzzle21 : Puzzle<string, long>
         List<(string Code, List<Direction?> Moves)> moves = GetMoves();
         var complexities = moves.Select(m => CalculateComplexity(m.Code, m.Moves)).ToList();
         var complexitySum = complexities.Sum();
+        
+        // 103026 is too low
         return complexitySum;
     }
 
@@ -57,16 +59,43 @@ public class Puzzle21 : Puzzle<string, long>
         _dPad2 = new KeyPad<Direction>(dButtons, obstacles, boundary);
     }
 
+    private const bool DoPrint = true;
+    private void Print(string str)
+    {
+        if (DoPrint)
+        {
+            Console.WriteLine(str);
+        }
+    }
+
     private List<Direction?> PushDigits(string code)
     {
+        Print("====");
+        Print(code);
+        Print("====");
+        
         var numbers = code.Select(c => c == 'A' ? (int?)null : int.Parse(c.ToString())).ToList();
         var numPadMoveSequences = PushKeyPad(_numPad, numbers);
+        foreach ((int index, char value) in code.Index())
+        {
+            Print($"{value}: {SequenceToString(numPadMoveSequences[index])}");
+        }
+        Print("*");
+        
         List<List<Direction?>> dPad1MoveSequences = [];
+        Print(SequenceToString(numPadMoveSequences.SelectMany(s => s).ToList()));
+        Print("---");
         foreach (var moveSequence in numPadMoveSequences)
         {
             var dPad1Moves = PushKeyPad(_dPad1, moveSequence);
             dPad1MoveSequences.AddRange(dPad1Moves);
+            foreach ((int index, List<Direction?>  value) in dPad1Moves.Index())
+            {
+                Print($"{SequenceToString(value)}: {SequenceToString(dPad1Moves[index])}");
+            }
+            Print("*");
         }
+        
         List<List<Direction?>> dPad2MoveSequences = [];
         foreach (var moveSequence in dPad1MoveSequences)
         {
@@ -100,7 +129,7 @@ public class Puzzle21 : Puzzle<string, long>
             // Every move sequence should end with a push of the Action button (button with the "null" direction)
             List<Direction?> sequences = [..orderedMovesSequence, null];
             var str = SequenceToString(sequences);
-            Console.WriteLine($"{value?.ToString() ?? "A"}: {str}");
+            // Console.WriteLine($"{value?.ToString() ?? "A"}: {str}");
             movesSequences.Add(sequences);
         }
 

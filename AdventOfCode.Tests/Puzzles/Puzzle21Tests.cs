@@ -50,10 +50,10 @@ public class Puzzle21Tests
     // act: <<vA    A >A >^A  A   vA <^A >A A  vA ^A<vA>^A<A>A<vA>^A<A>A<<vA>A>^AAvA<^A>A
     [Theory]
     [InlineData("029A", "<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A", 68 * 29)]
-    // [InlineData("980A", "<v<A>>^AAAvA^A<vA<AA>>^AvAA<^A>A<v<A>A>^AAAvA<^A>A<vA>^A<A>A", 60 * 980)]
+    [InlineData("980A", "<v<A>>^AAAvA^A<vA<AA>>^AvAA<^A>A<v<A>A>^AAAvA<^A>A<vA>^A<A>A", 60 * 980)]
     // [InlineData("179A", "<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", 68 * 179)]
     // [InlineData("456A", "<v<A>>^AA<vA<A>>^AAvAA<^A>A<vA>^A<A>A<vA>^A<A>A<v<A>A>^AAvA<^A>A", 64 * 456)]
-    // [InlineData("379A", "<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", 64 * 379)]
+    [InlineData("379A", "<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", 64 * 379)]
     public void TestGetMoves(string code, string expectedMoves, int expectedComplexity)
     {
         _puzzle = new Puzzle21(code);
