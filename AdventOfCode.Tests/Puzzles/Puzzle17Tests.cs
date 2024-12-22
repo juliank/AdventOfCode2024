@@ -12,6 +12,8 @@ public class Puzzle17Tests
     [Fact]
     public void SolvePart1()
     {
+        // Uncomment below to be allowed to read when running from unit tests in Rider
+        // _puzzle = new Puzzle17(File.ReadLines("C:\\src\\personal\\AdventOfCode2024Input\\17.txt"));
         var result = _puzzle.SolvePart1();
         result.Should().Be("4,6,1,4,2,1,3,1,6");
     }

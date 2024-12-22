@@ -29,28 +29,32 @@ public class Puzzle17 : Puzzle<string, string>
     {
         if (!RunningFromTests)
         {
+            // Runs "eternally" with the real input.
+            // Have attempted to add even more caching (at jnz),
+            // but with this even the test case ends up in a loop...
             throw new NotImplementedException("Solution isn't working - attempt to add caching created a loop in jnz");
         }
-        (A, B, B, _program) = ProcessInput();
+        (A, B, C, _program) = ProcessInput();
         var expectedOutput = string.Join(',', _program);
-        var a = 0;
+        var a = 0L;
         while (true)
         {
             var output = "INVALID";
-            if (!_invalidInput.Contains((a, B, C)))
+            var currentInput = (a, B, C);
+            if (!_invalidInput.Contains(currentInput))
             {
                 output = RunProgram(a);
-            }
-            if (output == expectedOutput)
-            {
-                return a.ToString();
-            }
-            else
-            {
-                _invalidInput.Add((a, B, C));
+                if (output == expectedOutput)
+                {
+                    return a.ToString();
+                }
+
+                _invalidInput.Add(currentInput);
             }
             a++;
         }
+        
+        // 13185239446 is too low
     }
 
     private string RunProgram(long? alternativeA = null)
@@ -90,21 +94,21 @@ public class Puzzle17 : Puzzle<string, string>
             switch (@operator)
             {
                 case 0: // adv
-                    var adv = A / (long)Math.Pow(2, comboOperand);
-                    A = adv;
+                    // var adv = A / (long)Math.Pow(2, comboOperand);
+                    A /= (1L << (int)comboOperand);
                     break;
                 case 1: // bxl
-                    var bxl = B ^ literalOperand;
-                    B = bxl;
+                    B ^= literalOperand;
                     break;
                 case 2: // bst
-                    var bst = comboOperand % 8;
-                    B = bst;
+                    // var bst = comboOperand % 8;
+                    B = comboOperand & 7;
                     break;
                 case 3: // jnz
                     if (A != 0 && p != literalOperand) // Only jump if A is not 0 *AND* the instruction will actually move the pointer
                     {
                         p = literalOperand;
+                        // Attempt to add more caching, but we seem to hit a loop...
                         // if (p == 0 && _invalidInput.Contains((A, B, C)))
                         // {
                         //     _invalidInput.Add((initialA, initialB, initialC));
@@ -114,20 +118,19 @@ public class Puzzle17 : Puzzle<string, string>
                     }
                     break;
                 case 4: // bxc
-                    var bxc = B ^ C;
-                    B = bxc;
+                    B ^= C;
                     break;
                 case 5: // out
-                    var outValue = comboOperand % 8;
-                    output.Add(outValue);
+                    // var outValue = comboOperand % 8;
+                    output.Add(comboOperand & 7);
                     break;
                 case 6: // bdv
-                    var bdv = A / (long)Math.Pow(2, comboOperand);
-                    B = bdv;
+                    // var bdv = A / (long)Math.Pow(2, comboOperand);
+                    B = A / (1L << (int)comboOperand);
                     break;
                 case 7: // cdv
-                    var cdv = A / (long)Math.Pow(2, comboOperand);
-                    C = cdv;
+                    // var cdv = A / (long)Math.Pow(2, comboOperand);
+                    C = A / (1L << (int)comboOperand);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(@operator), @operator, $"{@operator} is an invalid operator.");
