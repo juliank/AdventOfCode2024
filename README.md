@@ -62,3 +62,4 @@ Missing solutions and suggestions for improvements, for when time might be avail
 - Puzzle 20:
   - Part 1 is too slow
   - Part 2 is not yet implemented
+- Puzzle 22: Solved part 1, good performance. No immediate idea on how to approach part 2.
