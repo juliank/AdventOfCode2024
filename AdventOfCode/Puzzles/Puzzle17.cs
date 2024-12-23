@@ -22,18 +22,19 @@ public class Puzzle17 : Puzzle<string, string>
     }
 
     private readonly HashSet<(long, long, long)> _invalidInput = [];
+    private long? _lastKnownInvalidA = null;
 
     internal bool RunningFromTests { get; set; }
 
     public override string SolvePart2()
     {
-        if (!RunningFromTests)
-        {
-            // Runs "eternally" with the real input.
-            // Have attempted to add even more caching (at jnz),
-            // but with this even the test case ends up in a loop...
-            throw new NotImplementedException("Solution isn't working - attempt to add caching created a loop in jnz");
-        }
+        // if (!RunningFromTests)
+        // {
+        //     // Runs "eternally" with the real input.
+        //     // Have attempted to add even more caching (at jnz),
+        //     // but with this even the test case ends up in a loop...
+        //     throw new NotImplementedException("Solution isn't working - attempt to add caching created a loop in jnz");
+        // }
         (A, B, C, _program) = ProcessInput();
         var expectedOutput = string.Join(',', _program);
         var a = 0L;
@@ -41,15 +42,15 @@ public class Puzzle17 : Puzzle<string, string>
         {
             var output = "INVALID";
             var currentInput = (a, B, C);
-            if (!_invalidInput.Contains(currentInput))
+            if (!_invalidInput.Contains(currentInput)) // Only invalid values found inside RunProgram is added to this cache
             {
                 output = RunProgram(a);
                 if (output == expectedOutput)
                 {
                     return a.ToString();
                 }
-
-                _invalidInput.Add(currentInput);
+                _lastKnownInvalidA = a;
+                // _invalidInput.Add(currentInput);
             }
             a++;
         }
@@ -109,11 +110,19 @@ public class Puzzle17 : Puzzle<string, string>
                     {
                         p = literalOperand;
                         // Attempt to add more caching, but we seem to hit a loop...
-                        // if (p == 0 && _invalidInput.Contains((A, B, C)))
-                        // {
-                        //     _invalidInput.Add((initialA, initialB, initialC));
-                        //     return "INVALID";
-                        // }
+                        if (p == 0)
+                        {
+                            if (A <= _lastKnownInvalidA && B == 0 && C == 0)
+                            {
+                                // No need to add this to the cache
+                                return "INVALID";
+                            }
+                            if (_invalidInput.Contains((A, B, C)))
+                            {
+                                _invalidInput.Add((initialA, initialB, initialC));
+                                return "INVALID";
+                            }
+                        }
                         p -= 2; // Since the for loop will increment the pointer by 2
                     }
                     break;
