@@ -121,24 +121,57 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
     {
         TResult result;
 
-        Stopwatch sw;
+        var sw = Stopwatch.StartNew();
+        string? hardCoded = null;
         try
         {
-            sw = Stopwatch.StartNew();
-            result = SolvePart2();
+            try
+            {
+                result = SolvePart2();
+            }
+            catch (NotImplementedException)
+            {
+                Console.WriteLine("Solution to part 2 is not implemented yet, solving part 1 instead");
+                sw = Stopwatch.StartNew();
+                result = SolvePart1();
+            }
         }
-        catch (NotImplementedException)
+        catch (HardCodedResultException e)
         {
-            Console.WriteLine("Solution to part 2 is not implemented yet, solving part 1 instead");
-            sw = Stopwatch.StartNew();
-            result = SolvePart1();
+            result = (TResult)e.HardcodedResult;
+            hardCoded = e.Message;
         }
 
         sw.Stop();
         var elapsed = sw.Elapsed < TimeSpan.FromSeconds(1) ? $"{sw.ElapsedMilliseconds} ms" : $"{sw.Elapsed}";
-        Console.WriteLine($"Solution time: {elapsed}");
+        var time = hardCoded == null ? $"{elapsed}" : $"hard-coded ({hardCoded})";
+        Console.WriteLine($"Solution time: {time}");
 
         return result;
+    }
+
+    protected internal bool IsRunningFromTest { get; set; }
+
+    /// <summary>
+    /// Throws a <see cref="HardCodedResultException"/> with the given result.
+    /// </summary>
+    /// <param name="hardCodedResult">The result to throw.</param>
+    /// <param name="message">An optional message to include in the exception.</param>
+    /// <param name="notFromTest">If true, the exception will not be thrown when running the puzzle from the test project.</param>
+    /// <remarks>
+    /// This method is useful if it is necessary to do an "early return", instead of running the rest of the implemented
+    /// logic. E.g. when it is too slow (for when running all the puzzles in batch), or the solution only works
+    /// (efficiently) on the test input.
+    /// </remarks>
+    protected void ThrowHardCodedResult(TResult hardCodedResult, string message = "Result is hard-coded", bool notFromTest = false)
+    {
+        if (notFromTest && IsRunningFromTest)
+        {
+            // Let the normal execution continue...
+            return;
+        }
+        
+        throw new HardCodedResultException(hardCodedResult, message);
     }
 
     /// <summary>

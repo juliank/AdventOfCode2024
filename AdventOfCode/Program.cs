@@ -5,8 +5,8 @@ var puzzleTypes = assembly.GetTypes()
     .Where(t => t.IsAssignableTo(typeof(IPuzzle)) && !t.IsInterface && !t.IsAbstract)
     .Select(t =>
     {
-        var puzzleId = int.Parse(t.Name[^2..]);
-        return (Id: puzzleId, Type: t);
+        var pid = int.Parse(t.Name[^2..]);
+        return (Id: pid, Type: t);
     })
     .OrderBy(p => p.Id)
     .Skip(1) // To skip the "dummy" 00 puzzle
@@ -61,20 +61,31 @@ void SolveAllPuzzles()
             var puzzle = (IPuzzle)Activator.CreateInstance(puzzleType.Type)!;
             if (puzzle.SkipPart1WhenSolveAll)
             {
-                WriteLine($"- part 1: SKIPPED");
+                WriteLine("- part 1: SKIPPED");
             }
             else
             {
                 sw = Stopwatch.StartNew();
-                var solutionPart1 = puzzle.SolvePart1();
+                object solutionPart1;
+                string? hardCoded = null;
+                try
+                {
+                    solutionPart1 = puzzle.SolvePart1();
+                }
+                catch (HardCodedResultException e)
+                {
+                    hardCoded = e.Message;
+                    solutionPart1 = e.HardcodedResult;
+                }
                 sw.Stop();
                 var elapsed = sw.Elapsed < TimeSpan.FromSeconds(1) ? $"{sw.ElapsedMilliseconds} ms" : $"{sw.Elapsed}";
-                WriteLine($"- part 1: [{solutionPart1}] (time: {elapsed})");
+                var time = hardCoded == null ? $"time: {elapsed}" : $"hard-coded: {hardCoded}";
+                WriteLine($"- part 1: [{solutionPart1}] ({time})");
             }
         }
         catch (NotImplementedException)
         {
-            WriteLine($"- part 1: NOT YET IMPLEMENTED");
+            WriteLine("- part 1: NOT YET IMPLEMENTED");
         }
 
         try
@@ -83,20 +94,31 @@ void SolveAllPuzzles()
             var puzzle = (IPuzzle)Activator.CreateInstance(puzzleType.Type)!;
             if (puzzle.SkipPart2WhenSolveAll)
             {
-                WriteLine($"- part 2: SKIPPED");
+                WriteLine("- part 2: SKIPPED");
             }
             else
             {
                 sw = Stopwatch.StartNew();
-                var solutionPart2 = puzzle.SolvePart2();
+                object solutionPart2;
+                string? hardCoded = null;
+                try
+                {
+                    solutionPart2 = puzzle.SolvePart2();
+                }
+                catch (HardCodedResultException e)
+                {
+                    hardCoded = e.Message;
+                    solutionPart2 = e.HardcodedResult;
+                }
                 sw.Stop();
                 var elapsed = sw.Elapsed < TimeSpan.FromSeconds(1) ? $"{sw.ElapsedMilliseconds} ms" : $"{sw.Elapsed}";
-                WriteLine($"- part 2: [{solutionPart2}] (time: {elapsed})");
+                var time = hardCoded == null ? $"time: {elapsed}" : $"hard-coded: {hardCoded}";
+                WriteLine($"- part 2: [{solutionPart2}] ({time})");
             }
         }
         catch (NotImplementedException)
         {
-            WriteLine($"- part 2: NOT YET IMPLEMENTED");
+            WriteLine("- part 2: NOT YET IMPLEMENTED");
         }
         WriteLine();
     }
