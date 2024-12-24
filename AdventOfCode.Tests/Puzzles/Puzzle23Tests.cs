@@ -63,4 +63,46 @@ public class Puzzle23Tests
         var result = _puzzle.SolvePart1();
         result.Should().Be("7");
     }
+
+    [Fact]
+    public void TestPart2Example()
+    {
+        _puzzle = new Puzzle23(
+            ("kh", "tc"),
+            ("qp", "kh"),
+            ("de", "cg"),
+            ("ka", "co"),
+            ("yn", "aq"),
+            ("qp", "ub"),
+            ("cg", "tb"),
+            ("vc", "aq"),
+            ("tb", "ka"),
+            ("wh", "tc"),
+            ("yn", "cg"),
+            ("kh", "ub"),
+            ("ta", "co"),
+            ("de", "co"),
+            ("tc", "td"),
+            ("tb", "wq"),
+            ("wh", "td"),
+            ("ta", "ka"),
+            ("td", "qp"),
+            ("aq", "cg"),
+            ("wq", "ub"),
+            ("ub", "vc"),
+            ("de", "ta"),
+            ("wq", "aq"),
+            ("wq", "vc"),
+            ("wh", "yn"),
+            ("ka", "de"),
+            ("kh", "ta"),
+            ("co", "tc"),
+            ("wh", "qp"),
+            ("tb", "vc"),
+            ("td", "yn")
+        );
+        _puzzle.IsRunningFromTest = true;
+        var result = _puzzle.SolvePart2();
+        result.Should().Be("co,de,ka,ta");
+    }
 }

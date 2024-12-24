@@ -9,6 +9,7 @@ public class Puzzle23 : Puzzle<(string A, string B), string>
     public Puzzle23(params IEnumerable<(string A, string B)> inputEntries) : base(PuzzleId, inputEntries) { }
 
     private readonly Dictionary<string, HashSet<string>> _graph = [];
+ 
     public override string SolvePart1()
     {
         PopulateGraph();
@@ -75,10 +76,53 @@ public class Puzzle23 : Puzzle<(string A, string B), string>
             connectedNodes.Add(edge.A);
         }
     }
+    
+    private List<string> _longestNetwork = [];
 
     public override string SolvePart2()
     {
-        throw new NotImplementedException();
+        ThrowHardCodedResult("?", "Too slow, haven't found answer", notFromTest: true);
+        
+        PopulateGraph();
+        var chcCandidates = _graph.Keys.Where(k => k.StartsWith('t')); // Candidates for Chief Historian's computer
+        foreach (var chcCandidate in chcCandidates)
+        {
+            BuildNetwork(chcCandidate, new HashSetTree<string>(string.Empty));
+        }
+
+        var password = string.Join(",", _longestNetwork.OrderBy(s => s));
+        return password;
+    }
+
+    private void BuildNetwork(string computer, HashSetTree<string> network)
+    {
+        var networkNode = new HashSetTree<string>(computer);
+        network.Add(networkNode);
+        var newNetwork = networkNode
+            .GetParents(includeSelf: true)
+            .ToList()[..^1] // Leave out the root node with string.Empty
+            .ToHashSet();
+
+        // Exclude all the computers that are already in the graph
+        var nextCandidatesAll = _graph
+            .Where(node => !newNetwork.Contains(node.Key))
+            .Select(kvp => (Candidate: kvp.Key, ConnectedTo: kvp.Value));
+        // Only include the computers that are linked to all the existing computers in the network
+        var nextCandidates = nextCandidatesAll
+            // .Where(node => node.ConnectedTo.All(n => newNetwork.Contains(n)))
+            .Where(node => newNetwork.All(n => node.ConnectedTo.Contains(n)))
+            .ToList();
+        if (nextCandidates.Count > 0)
+        {
+            foreach (var nextCandidate in nextCandidates)
+            {
+                BuildNetwork(nextCandidate.Candidate, networkNode);
+            }
+        }
+        else if (newNetwork.Count > _longestNetwork.Count)
+        {
+            _longestNetwork = newNetwork.ToList();
+        }
     }
 
     protected internal override (string A, string B) ParseInput(string inputItem)
