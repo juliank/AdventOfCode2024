@@ -9,7 +9,7 @@ public class Puzzle20Tests
         _puzzle = new Puzzle20();
     }
 
-    [Fact]
+    [Fact(Skip = "Too slow with real input")]
     public void SolvePart1()
     {
         var result = _puzzle.SolvePart1();

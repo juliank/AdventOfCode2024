@@ -16,7 +16,7 @@ public class Puzzle24Tests
         result.Should().Be(49574189473968);
     }
 
-    // [Fact(Skip = "Not yet implemented")]
+    [Fact(Skip = "Not yet implemented")]
     public void SolvePart2()
     {
         var result = _puzzle.SolvePart2();

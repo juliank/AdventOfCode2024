@@ -12,17 +12,11 @@ public class Puzzle20 : Puzzle<string, long>
     }
     
     private readonly int _cheatLimit = 100;
-    internal bool IsRunningFromTest { get; set; }
 
     public override long SolvePart1()
     {
-        if (!IsRunningFromTest && DateTime.Now > DateTime.MinValue)
-        {
-            // Solution time: 00:01:11.4737841
-            // Result is: [1485]
-            // The solution time is too slow to include in regular runs and unit testing
-            return 1485;
-        }
+        ThrowHardCodedResult(1485, "Solution time is too slow with real input (00:01:11.4737841)", notFromTest: true);
+        
         var walls = new HashSet<Point>();
         var start = new Point(0, 0);
         var end = new Point(0, 0);
