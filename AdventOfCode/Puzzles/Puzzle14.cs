@@ -35,11 +35,7 @@ public class Puzzle14 : Puzzle<(Point P, Point V), long>
 
     public override long SolvePart2()
     {
-        if (DateTime.Now > DateTime.MinValue)
-        {
-            // See end of file for output after 7892 seconds
-            return 7892;
-        }
+        ThrowHardCodedResult(7892, "Must debug visually to find correct answer");
         
         _printMap = true;
         _haltPrint = true;

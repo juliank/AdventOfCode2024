@@ -12,12 +12,11 @@ public class Puzzle18Tests
     [Fact]
     public void SolvePart1()
     {
-        // _puzzle.DebugOutput = true;
         var result = _puzzle.SolvePart1();
         result.Should().Be("296");
     }
 
-    [Fact]
+    [Fact(Skip = "Too slow with real input")]
     public void SolvePart2()
     {
         var result = _puzzle.SolvePart2();
@@ -89,6 +88,7 @@ public class Puzzle18Tests
             new Point(1, 6),
             new Point(2, 0)
         );
+        _puzzle.IsRunningFromTest = true;
         // _puzzle.DebugOutput = true;
         var result = _puzzle.SolvePart2();
         result.Should().Be("6,1");

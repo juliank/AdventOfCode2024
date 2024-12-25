@@ -66,17 +66,7 @@ public class Puzzle06 : Puzzle<string, long>
     /// </summary>
     public override long SolvePart2()
     {
-        if (DateTime.Now > DateTime.MinValue)
-        {
-            // The original result when solving the puzzle:
-            //   Preparing to solve puzzle 6...
-            //   Solution time: 00:00:03.4407690
-            //   Result is: [1719]
-            //
-            // To not kill performance when running tests (or "all" puzzles),
-            // we return a hardcoded value for the answer here.
-            return 1719;
-        }
+        ThrowHardCodedResult(1719, "Solution time (00:00:03.4407690) should be improved", notFromTest: true);
         ProcessInput();
 
         var direction = Direction.N;

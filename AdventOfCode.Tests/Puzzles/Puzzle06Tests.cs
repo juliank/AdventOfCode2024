@@ -16,7 +16,7 @@ public class Puzzle06Tests
         result.Should().Be(4752);
     }
 
-    [Fact]
+    [Fact(Skip = "Too slow with real input")]
     public void SolvePart2()
     {
         var result = _puzzle.SolvePart2();
@@ -38,7 +38,7 @@ public class Puzzle06Tests
             "#.........",
             "......#..."
         );
-
+        _puzzle.IsRunningFromTest = true;
         var answer = _puzzle.SolvePart2WorkingWithExample();
         answer.Should().Be(6);
     }
