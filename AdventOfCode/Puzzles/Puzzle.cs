@@ -49,7 +49,7 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
             }
             if (_inputMap.Count == 0)
             {
-                ProcessInput();
+                ProcessMapInput();
             }
             return _inputMap;
         }
@@ -73,7 +73,7 @@ public abstract class Puzzle<TInput, TResult>(int id) : IPuzzle
         private set;
     } = new();
 
-    private void ProcessInput()
+    private void ProcessMapInput()
     {
         // InputEntries[y][x] (rows,columns)
         var rows = InputEntries.Count;
