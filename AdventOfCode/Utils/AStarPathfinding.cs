@@ -8,12 +8,22 @@ public static class AStarPathfinding
     /// and evaluates neighboring nodes to determine the most efficient route.
     /// </summary>
     /// <seealso href="https://en.wikipedia.org/wiki/A*_search_algorithm"/>
+    /// <param name="start">The starting point of the path.</param>
+    /// <param name="end">The end point of the path.</param>
+    /// <param name="boundary">The boundaries to move within.</param>
+    /// <param name="obstacles">Any obstacles that should be avoided.</param>
+    /// <param name="costFunction">
+    /// A custom function to calculate the cost of moving from one step to the next,
+    /// taking the previous step into account. If not given, the default cost for
+    /// moving to the next step will be 1.
+    /// </param>
     /// <returns>A list of points representing the shortest path from the start to the goal, or an empty list if no path is found.</returns>
     public static List<Point> FindShortestPath(
-        Point start,
-        Point end,
-        Boundary boundary,
-        HashSet<Point> obstacles)
+    Point start,
+    Point end,
+    Boundary boundary,
+    HashSet<Point> obstacles,
+    Func<Point?, Point, Point, int>? costFunction = null)
     {
         int FScoreComparison((int FScore, Point Point) a, (int FScore, Point Point) b)
         {
@@ -50,7 +60,20 @@ public static class AStarPathfinding
                 .ToList();
             foreach (var neighbor in neighbors)
             {
-                var tentativeGScore = gScore[current] + 1; // 1 cost for moving to a neighbor
+                int tentativeGScore;
+                if (costFunction == null)
+                {
+                    tentativeGScore = gScore[current] + 1;
+                }
+                else
+                {
+                    Point? previous = null;
+                    if (cameFrom.TryGetValue(current, out var prev))
+                    {
+                        previous = prev;
+                    }
+                    tentativeGScore = gScore[current] + costFunction(previous, current, neighbor);
+                }
 
                 if (gScore.TryGetValue(neighbor, out int neighborGScore) && tentativeGScore >= neighborGScore)
                 {
