@@ -40,12 +40,12 @@ public class Puzzle16 : Puzzle<string, long>
     private int ScorePath(List<Point> path)
     {
         var score = CostFunction(null, path[0], path[1]);
-        for (int i = 2; i < path.Count - 1; i++)
+        for (int i = 1; i < path.Count - 1; i++)
         {
             score += CostFunction(path[i - 1], path[i], path[i + 1]);
         }
 
-        return score + 1; // Not sure why, but there seems to be an off-by-one error somewhere...
+        return score;
     }
 
     private int CostFunction(Point? previous, Point current, Point next)
