@@ -59,6 +59,7 @@ Missing solutions and suggestions for improvements, for when time might be avail
 - Puzzle 16: Using the A-star algorithm, we get a solution (in decent time), but the answer is wrong. Works on both tests though.
 - Puzzle 17: Part 2 works on the test input, but running on the real input is to slow. Initial attempt to add caching resulted in an eternal loop.
 - Puzzle 18: Part 2 takes a few seconds to process, so a hard-coded value is returned. Can it be improved?
+- Puzzle 19: Part 1 is fast, but answer is wrong. Even test on example input is wrong.
 - Puzzle 20:
   - Part 1 is too slow
   - Part 2 is not yet implemented

@@ -1,23 +1,23 @@
 namespace AdventOfCode.Models;
 
 /// <summary>
-/// Simple un-keyed tree implementation
+/// Simple keyed tree implementation
 /// </summary>
 /// <remarks>
 /// Initial inspiration: https://stackoverflow.com/a/942088/310001
 /// Implementation guided by Jetbrains AI Assistant
 /// </remarks>
-[DebuggerDisplay("{Value} (children: {Count})")]
-public class HashSetTree<TValue> : HashSet<HashSetTree<TValue>>
+[DebuggerDisplay("{Value} (chld: {Count})")]
+public class DictionaryTree<TKey, TValue> : Dictionary<TKey, DictionaryTree<TKey, TValue>> where TKey : notnull
 {
-    public HashSetTree(TValue value)
+    public DictionaryTree(TValue value)
     {
         Value = value;
     }
     
-    public TValue Value { get; }
+    public TValue Value { get; set; }
     
-    public HashSetTree<TValue>? Parent { get; private set; }
+    public DictionaryTree<TKey, TValue>? Parent { get; private set; }
 
     /// <summary>
     /// Add a node as a child to this node.
@@ -25,27 +25,27 @@ public class HashSetTree<TValue> : HashSet<HashSetTree<TValue>>
     /// <remarks>
     /// The added node will have this node set as its parent.
     /// </remarks>
-    public new void Add(HashSetTree<TValue> childNode)
+    public new void Add(TKey key, DictionaryTree<TKey, TValue> childNode)
     {
         childNode.Parent = this; // Set the parent of the added child node
-        base.Add(childNode); // Add the child node to the dictionary
+        base.Add(key, childNode); // Add the child node to the dictionary
     }
     
     /// <summary>
     /// Get a list of all the node's parent nodes, all the way to the topmost root node.
     /// </summary>
-    public IEnumerable<TValue> GetParents(bool includeSelf = true)
+    public IEnumerable<DictionaryTree<TKey, TValue>> GetParents(bool includeSelf = true)
     {
         if (includeSelf)
         {
-            yield return this.Value;
+            yield return this;
         }
         
         var currentNode = this.Parent;
 
         while (currentNode != null)
         {
-            yield return currentNode.Value;
+            yield return currentNode;
             currentNode = currentNode.Parent;
         }
     }
